@@ -1,0 +1,64 @@
+:root {
+  /* Premium Industrial Palette (Warm White + Champagne Gold + Charcoal) */
+  --bg-app: #F8F7F3;
+  --bg-surface-1: #FFFFFF;
+  --bg-surface-2: #FAF9F5;
+  --bg-surface-3: #F1EFEA;
+  --bg-dark-charcoal: #171717;
+  --bg-dark-charcoal-card: #1C1C1A;
+
+  /* Borders & Separation */
+  --border-subtle: #EFECE6;
+  --border-default: #E5E1D8;
+  --border-strong: #CEC7BA;
+  --border-focus: #B8924A;
+  --border-dark: #2A2A28;
+
+  /* Typography Colors */
+  --text-primary: #171717;
+  --text-secondary: #585854;
+  --text-tertiary: #888780;
+  --text-muted: #A3A29B;
+  --text-inverse: #FFFFFF;
+  --text-inverse-secondary: #B0AFA7;
+
+  /* Brand Accents: Champagne Gold */
+  --brand-gold: #B8924A;
+  --brand-gold-light: #D4AF68;
+  --brand-gold-dark: #9A7736;
+  --brand-gold-bg: rgba(184, 146, 74, 0.08);
+  --brand-gold-bg-hover: rgba(184, 146, 74, 0.14);
+  --brand-gold-border: rgba(184, 146, 74, 0.35);
+
+  /* Semantic Colors (Restrained, functional only) */
+  --score-high: #2D7A58;
+  --score-high-bg: rgba(45, 122, 88, 0.08);
+  --score-high-border: #9DC3B0;
+
+  --score-moderate: #B8924A;
+  --score-moderate-bg: rgba(184, 146, 74, 0.08);
+  --score-moderate-border: #D4AF68;
+
+  --score-low: #B93838;
+  --score-low-bg: rgba(185, 56, 56, 0.08);
+  --score-low-border: #E8A7A7;
+
+  /* Typography */
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+
+  /* Spacing & Radii (Deliberate 4-8px industrial radii) */
+  --radius-xs: 3px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* Shadows (Subtle, refined enterprise elevation) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03), 0 1px 1px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
+  --shadow-card: 0 1px 3px rgba(23, 23, 23, 0.04);
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
