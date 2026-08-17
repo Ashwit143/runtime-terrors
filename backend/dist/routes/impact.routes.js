@@ -39,3 +39,4 @@ exports.impactRouter.get('/summary', (req, res) => {
         },
     });
 });
+//# sourceMappingURL=impact.routes.js.map

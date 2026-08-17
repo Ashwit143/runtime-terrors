@@ -89,3 +89,4 @@ exports.MATCHING_CONFIG = {
         landfillDiversionRatio: 0.92, // 92% of matched material directly diverted from landfills
     },
 };
+//# sourceMappingURL=matchingConfig.js.map

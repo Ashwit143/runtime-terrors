@@ -96,3 +96,4 @@ exports.listingsRouter.post('/reset', (req, res) => {
         count: listingsStore.length,
     });
 });
+//# sourceMappingURL=listings.routes.js.map

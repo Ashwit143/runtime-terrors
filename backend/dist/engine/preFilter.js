@@ -41,3 +41,4 @@ function evaluateMaterialGate(supplier, receiver) {
         exclusionReason: `Material categories (${supplier.category} vs ${receiver.category}) are incompatible. Hard gate exclusion.`,
     };
 }
+//# sourceMappingURL=preFilter.js.map
