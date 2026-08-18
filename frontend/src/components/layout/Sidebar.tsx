@@ -6,10 +6,8 @@ import {
   BarChart3,
   Building2,
   Cpu,
-  RefreshCw,
   X,
 } from 'lucide-react';
-import { DEMO_SCENARIOS } from '../../data/presetScenarios.js';
 import { DemoScenario } from '../../types/index.js';
 
 interface SidebarProps {
@@ -18,9 +16,9 @@ interface SidebarProps {
   matchesCount: number;
   listingsCount: number;
   selectedMatchesCount: number;
-  selectedScenarioId: string;
-  onSelectScenario: (scenario: DemoScenario) => void;
-  onResetData: () => void;
+  selectedScenarioId?: string;
+  onSelectScenario?: (scenario: DemoScenario) => void;
+  onResetData?: () => void;
   isResetting?: boolean;
   isOpenMobile?: boolean;
   onCloseMobile?: () => void;
@@ -32,10 +30,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   matchesCount,
   listingsCount,
   selectedMatchesCount,
-  selectedScenarioId,
-  onSelectScenario,
-  onResetData,
-  isResetting = false,
   isOpenMobile = false,
   onCloseMobile,
 }) => {
@@ -149,45 +143,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             )}
           </button>
         </nav>
-
-        {/* Sidebar Bottom Controls */}
-        <div className="sidebar-footer">
-          {/* Judge Scenario Preset Selector */}
-          <div className="sidebar-scenario-box">
-            <div className="sidebar-scenario-label">Judge Scenario:</div>
-            <select
-              className="sidebar-scenario-select"
-              value={selectedScenarioId}
-              onChange={e => {
-                const found = DEMO_SCENARIOS.find(s => s.id === e.target.value);
-                if (found) onSelectScenario(found);
-              }}
-            >
-              {DEMO_SCENARIOS.map(s => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Engine Status Indicator */}
-          <div className="sidebar-engine-status">
-            <span className="status-dot" />
-            <span>5-Factor Engine Active</span>
-          </div>
-
-          {/* Reset Seed Data Button */}
-          <button
-            className="sidebar-reset-btn"
-            onClick={onResetData}
-            disabled={isResetting}
-            title="Reset to default synthetic Indian seed data"
-          >
-            <RefreshCw size={12} className={isResetting ? 'spin' : ''} />
-            <span>{isResetting ? 'Resetting...' : 'Reset Seed Data'}</span>
-          </button>
-        </div>
       </aside>
     </>
   );

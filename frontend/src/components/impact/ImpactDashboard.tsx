@@ -4,9 +4,7 @@ import {
   Recycle,
   IndianRupee,
   Leaf,
-  Trash2,
   BarChart2,
-  PieChart,
   CheckCircle2,
 } from 'lucide-react';
 
@@ -48,13 +46,13 @@ export const ImpactDashboard: React.FC<ImpactDashboardProps> = ({
     return `₹${lakhs.toFixed(2)} L`;
   };
 
-  // Category distribution data for the bar graph
+  // Category distribution data for the vertical column graph
   const categoryData = [
-    { label: 'Plastics (PET/HDPE)', waste: 70, co2: 84.0, cost: 5.2, color: 'var(--brand-gold)' },
-    { label: 'Textiles (Cotton/Synthetics)', waste: 35, co2: 63.0, cost: 3.1, color: 'var(--brand-gold-dark)' },
-    { label: 'Metals (Aluminium/Steel)', waste: 70, co2: 126.0, cost: 11.8, color: '#3B82F6' },
-    { label: 'Food & Agro Biomass', waste: 200, co2: 44.0, cost: 4.8, color: 'var(--score-high)' },
-    { label: 'Chemical Solvents', waste: 27, co2: 18.9, cost: 2.7, color: '#8B5CF6' },
+    { label: 'Plastics', fullLabel: 'Plastics (PET/HDPE)', waste: 70, co2: 84.0, cost: 5.2 },
+    { label: 'Textiles', fullLabel: 'Textiles (Cotton/Synthetic)', waste: 35, co2: 63.0, cost: 3.1 },
+    { label: 'Metals', fullLabel: 'Metals (Aluminium/Steel)', waste: 70, co2: 126.0, cost: 11.8 },
+    { label: 'Agro Biomass', fullLabel: 'Food & Agro Biomass', waste: 200, co2: 44.0, cost: 4.8 },
+    { label: 'Chemicals', fullLabel: 'Chemical Solvents', waste: 27, co2: 18.9, cost: 2.7 },
   ];
 
   const maxVal = Math.max(
@@ -62,6 +60,12 @@ export const ImpactDashboard: React.FC<ImpactDashboardProps> = ({
       chartMetric === 'waste' ? c.waste : chartMetric === 'co2' ? c.co2 : c.cost
     )
   );
+
+  const getUnitSuffix = () => {
+    if (chartMetric === 'waste') return 't';
+    if (chartMetric === 'co2') return 'tCO₂e';
+    return '₹ Lakhs';
+  };
 
   return (
     <div>
@@ -81,7 +85,7 @@ export const ImpactDashboard: React.FC<ImpactDashboardProps> = ({
         )}
       </div>
 
-      {/* 1. PRIMARY VISUALIZATION GRAPH (BAR CHART OVERVIEW) */}
+      {/* 1. PRIMARY VISUALIZATION: VERTICAL COLUMN GRAPH */}
       <div className="impact-chart-card">
         <div className="impact-chart-header">
           <div className="impact-chart-title">
@@ -111,39 +115,67 @@ export const ImpactDashboard: React.FC<ImpactDashboardProps> = ({
           </div>
         </div>
 
-        {/* Dynamic Horizontal Bar Visualization */}
-        <div className="impact-bars-container">
-          {categoryData.map((item, idx) => {
-            const currentVal =
-              chartMetric === 'waste'
-                ? item.waste
-                : chartMetric === 'co2'
-                ? item.co2
-                : item.cost;
-            const percentage = (currentVal / maxVal) * 100;
-            const unitLabel =
-              chartMetric === 'waste' ? 'tonnes' : chartMetric === 'co2' ? 'tCO₂e' : '₹ Lakhs';
+        {/* Vertical Column Chart Canvas */}
+        <div className="impact-column-chart-wrapper">
+          {/* Y-Axis Grid Lines & Scale */}
+          <div className="impact-column-chart-grid">
+            <div className="chart-grid-line">
+              <span className="chart-grid-label">
+                {chartMetric === 'cost' ? `₹${maxVal.toFixed(1)}L` : `${maxVal} ${getUnitSuffix()}`}
+              </span>
+              <div className="chart-line-rule" />
+            </div>
+            <div className="chart-grid-line">
+              <span className="chart-grid-label">
+                {chartMetric === 'cost' ? `₹${(maxVal * 0.5).toFixed(1)}L` : `${Math.round(maxVal * 0.5)} ${getUnitSuffix()}`}
+              </span>
+              <div className="chart-line-rule" />
+            </div>
+            <div className="chart-grid-line baseline">
+              <span className="chart-grid-label">0</span>
+              <div className="chart-line-rule" />
+            </div>
+          </div>
 
-            return (
-              <div key={idx} className="impact-bar-row">
-                <div className="impact-bar-info">
-                  <span className="impact-bar-label">{item.label}</span>
-                  <span className="impact-bar-val">
-                    {chartMetric === 'cost' ? `₹${currentVal.toFixed(1)}L` : `${currentVal} ${unitLabel}`}
-                  </span>
+          {/* Columns Container */}
+          <div className="impact-columns-container">
+            {categoryData.map((item, idx) => {
+              const currentVal =
+                chartMetric === 'waste'
+                  ? item.waste
+                  : chartMetric === 'co2'
+                  ? item.co2
+                  : item.cost;
+              const heightPercent = maxVal > 0 ? (currentVal / maxVal) * 100 : 0;
+              const displayVal =
+                chartMetric === 'cost' ? `₹${currentVal.toFixed(1)}L` : `${currentVal} ${getUnitSuffix()}`;
+
+              return (
+                <div key={idx} className="impact-column-bar-wrap">
+                  {/* Top Value Label */}
+                  <div className="impact-column-val-badge">
+                    {displayVal}
+                  </div>
+
+                  {/* Vertical Column Track & Fill */}
+                  <div className="impact-column-track">
+                    <div
+                      className="impact-column-fill"
+                      style={{
+                        height: `${heightPercent}%`,
+                      }}
+                      title={`${item.fullLabel}: ${displayVal}`}
+                    />
+                  </div>
+
+                  {/* X-Axis Category Label */}
+                  <div className="impact-column-x-label">
+                    <span className="x-label-primary">{item.label}</span>
+                  </div>
                 </div>
-                <div className="impact-bar-track">
-                  <div
-                    className="impact-bar-progress"
-                    style={{
-                      width: `${percentage}%`,
-                      backgroundColor: item.color,
-                    }}
-                  />
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
 

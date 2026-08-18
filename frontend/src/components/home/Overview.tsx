@@ -9,6 +9,7 @@ import {
   Mail,
   MapPin,
   Phone,
+  BarChart2,
 } from 'lucide-react';
 
 interface OverviewProps {
@@ -56,6 +57,14 @@ const FAQ_ITEMS: FAQItem[] = [
   },
 ];
 
+const STREAM_IMPACT_DATA = [
+  { stream: 'Plastics', fullLabel: 'Plastics (PET/HDPE)', wasteDiverted: 70 },
+  { stream: 'Textiles', fullLabel: 'Textiles (Cotton/Synthetic)', wasteDiverted: 35 },
+  { stream: 'Metals', fullLabel: 'Metals (Aluminium/Steel)', wasteDiverted: 70 },
+  { stream: 'Food & Agro', fullLabel: 'Food & Agro Biomass', wasteDiverted: 200 },
+  { stream: 'Chemicals', fullLabel: 'Chemical Solvents', wasteDiverted: 27 },
+];
+
 export const Overview: React.FC<OverviewProps> = ({
   onNavigateToMatches,
   onNavigateToListing,
@@ -63,10 +72,13 @@ export const Overview: React.FC<OverviewProps> = ({
   totalMatchesCount,
 }) => {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const toggleFaq = (index: number) => {
     setOpenFaqIndex(openFaqIndex === index ? null : index);
   };
+
+  const maxWaste = 200;
 
   return (
     <div className="overview-container">
@@ -158,7 +170,7 @@ export const Overview: React.FC<OverviewProps> = ({
         </div>
       </section>
 
-      {/* 4. ABOUT US SECTION */}
+      {/* 4. ABOUT US SECTION WITH CIRCULAR IMPACT COLUMN GRAPH */}
       <section id="about" className="overview-section">
         <div className="overview-section-header">
           <h2 className="overview-section-title">About Us</h2>
@@ -171,9 +183,98 @@ export const Overview: React.FC<OverviewProps> = ({
           <p style={{ fontSize: '14.5px', color: 'var(--text-primary)', lineHeight: 1.7, marginBottom: '12px' }}>
             <strong>CircularMatch AI</strong> connects companies that generate industrial waste with companies that can use those materials, creating economically useful and environmentally valuable resource exchanges.
           </p>
-          <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '22px' }}>
             Built for the <strong>IIC 3.0 Open Innovation Hackathon</strong>, CircularMatch AI replaces black-box recommendation models with 100% explainable, mathematically auditable scoring across material compatibility, transport logistics, volume ratios, quality grades, and delivery frequency.
           </p>
+
+          {/* CIRCULAR IMPACT BY MATERIAL STREAM VERTICAL COLUMN CHART */}
+          <div className="about-chart-section">
+            <div className="about-chart-header">
+              <div>
+                <div className="about-chart-title">
+                  <BarChart2 size={16} color="var(--brand-gold-dark)" />
+                  <span>Circular Impact by Material Stream</span>
+                </div>
+                <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                  Comparing monthly waste diversion volumes across primary industrial categories.
+                </p>
+              </div>
+              <div className="about-chart-y-caption">
+                Y-Axis: <strong>Waste Diverted (tonnes)</strong>
+              </div>
+            </div>
+
+            <div className="about-column-chart-box">
+              {/* Y-Axis Grid Marks (200, 150, 100, 50, 0) */}
+              <div className="about-chart-grid">
+                <div className="about-grid-line">
+                  <span className="about-grid-label">200 t</span>
+                  <div className="about-grid-rule" />
+                </div>
+                <div className="about-grid-line">
+                  <span className="about-grid-label">150 t</span>
+                  <div className="about-grid-rule" />
+                </div>
+                <div className="about-grid-line">
+                  <span className="about-grid-label">100 t</span>
+                  <div className="about-grid-rule" />
+                </div>
+                <div className="about-grid-line">
+                  <span className="about-grid-label">50 t</span>
+                  <div className="about-grid-rule" />
+                </div>
+                <div className="about-grid-line baseline">
+                  <span className="about-grid-label">0</span>
+                  <div className="about-grid-rule" />
+                </div>
+              </div>
+
+              {/* Columns Container */}
+              <div className="about-columns-container">
+                {STREAM_IMPACT_DATA.map((item, idx) => {
+                  const heightPercent = (item.wasteDiverted / maxWaste) * 100;
+                  const isHovered = hoveredIndex === idx;
+
+                  return (
+                    <div
+                      key={idx}
+                      className="about-column-item"
+                      onMouseEnter={() => setHoveredIndex(idx)}
+                      onMouseLeave={() => setHoveredIndex(null)}
+                    >
+                      {/* Value Badge above column */}
+                      <div className={`about-column-val-tag ${isHovered ? 'highlight' : ''}`}>
+                        {item.wasteDiverted} t
+                      </div>
+
+                      {/* Vertical Bar Track & Fill */}
+                      <div className="about-column-track">
+                        <div
+                          className="about-column-bar"
+                          style={{
+                            height: `${heightPercent}%`,
+                          }}
+                        />
+                      </div>
+
+                      {/* X-Axis Category Label */}
+                      <div className="about-column-x-label">
+                        <span className="x-cat-name">{item.stream}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="about-chart-x-axis-footer">
+              Material Stream Category
+            </div>
+
+            <div className="about-chart-prototype-note">
+              Prototype impact estimates based on seeded platform data
+            </div>
+          </div>
         </div>
       </section>
 

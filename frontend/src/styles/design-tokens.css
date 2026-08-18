@@ -43,9 +43,9 @@
   --score-low-bg: rgba(185, 56, 56, 0.08);
   --score-low-border: #E8A7A7;
 
-  /* Typography */
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  /* Typography: Clean Sans-Serif Stack across entire application */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 
   /* Spacing & Radii (Deliberate 4-8px industrial radii) */
   --radius-xs: 3px;
