@@ -4,13 +4,11 @@ import { ScoreIndicator } from './ScoreIndicator.js';
 import { MatchDNA } from './MatchDNA.js';
 import {
   MapPin,
-  Scale,
   ChevronDown,
   ChevronUp,
-  Leaf,
-  IndianRupee,
   CheckCircle,
-  Building,
+  Package,
+  Layers,
 } from 'lucide-react';
 
 interface MatchCardProps {
@@ -27,75 +25,73 @@ export const MatchCard: React.FC<MatchCardProps> = ({
   isSelected = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { supplier, receiver, score, impact } = match;
+  const { supplier, receiver, score } = match;
 
-  // Format currency for Indian INR
-  const formattedINR = new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    maximumFractionDigits: 0,
-  }).format(impact.estimatedCostSavedINR);
+  // Semantic quality badge styling
+  const getQualityBadgeClass = (grade: string) => {
+    if (grade === 'HIGH') return 'quality-badge-high';
+    if (grade === 'MEDIUM') return 'quality-badge-medium';
+    return 'quality-badge-low';
+  };
 
   return (
     <div className={`match-card ${isSelected ? 'selected-border' : ''}`}>
       <div className="match-card-main">
-        {/* Entity details & exchange stream */}
+        {/* Scannable Match Information */}
         <div className="match-entity-details">
-          {/* Top Row: Supplier ➔ Receiver */}
+          {/* Top Row: Supplier ➔ Receiver & Category */}
           <div className="match-company-name">
             <span
-              style={{ cursor: onViewCompanyDetails ? 'pointer' : 'default', textDecoration: onViewCompanyDetails ? 'underline text-decoration-color: var(--border-strong)' : 'none' }}
+              className="match-company-link"
               onClick={() => onViewCompanyDetails && onViewCompanyDetails(supplier.id)}
-              title="Click to view company profile"
+              title="Click to view supplier profile"
             >
               {supplier.companyName}
             </span>
-            <span style={{ color: 'var(--brand-gold-dark)', fontSize: '13px' }}>➔</span>
+            <span className="match-arrow">➔</span>
             <span
-              style={{ cursor: onViewCompanyDetails ? 'pointer' : 'default', textDecoration: onViewCompanyDetails ? 'underline text-decoration-color: var(--border-strong)' : 'none' }}
+              className="match-company-link"
               onClick={() => onViewCompanyDetails && onViewCompanyDetails(receiver.id)}
-              title="Click to view company profile"
+              title="Click to view receiver profile"
             >
               {receiver.companyName}
             </span>
             <span className="match-badge">{supplier.category}</span>
           </div>
 
-          {/* Material & Specification */}
+          {/* Material Name */}
           <div className="match-material-name">
-            <strong>{supplier.materialName}</strong> · {supplier.qualityGrade} Grade · {supplier.frequency.toLowerCase()} stream
+            {supplier.materialName}
           </div>
 
-          {/* Clean scannable meta attributes */}
+          {/* Scannable Essential Attributes: Location, Distance, Quantity, Quality, Availability */}
           <div className="match-meta-grid">
             <div className="match-meta-item">
               <MapPin size={13} color="var(--brand-gold-dark)" />
-              <span>
-                {supplier.city} to {receiver.city} ({score.distanceKm} km)
+              <span>{supplier.city} to {receiver.city} · <strong>{score.distanceKm} km</strong></span>
+            </div>
+
+            <div className="match-meta-item">
+              <Package size={13} color="var(--text-secondary)" />
+              <span>{supplier.quantity} {supplier.unit}</span>
+            </div>
+
+            <div className="match-meta-item">
+              <span className={`quality-badge ${getQualityBadgeClass(supplier.qualityGrade)}`}>
+                {supplier.qualityGrade} Grade
               </span>
             </div>
 
             <div className="match-meta-item">
-              <Scale size={13} color="var(--text-secondary)" />
-              <span>
-                {supplier.quantity} {supplier.unit} (Ratio: {score.quantityRatio}x)
+              <span className="availability-tag">
+                {supplier.frequency.toLowerCase()}
               </span>
-            </div>
-
-            <div className="match-meta-item">
-              <Leaf size={13} color="var(--score-high)" />
-              <span>{impact.co2AvoidedTons} tCO₂e avoided</span>
-            </div>
-
-            <div className="match-meta-item">
-              <IndianRupee size={13} color="var(--brand-gold-dark)" />
-              <span>{formattedINR} est. savings</span>
             </div>
           </div>
         </div>
 
-        {/* Right side: Structured score indicator & primary actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        {/* Right side: Score Block & Action Buttons */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <ScoreIndicator score={score.overallScore} />
 
           <div className="match-card-actions">
@@ -103,7 +99,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
               <button
                 className={`btn-secondary ${isSelected ? 'btn-primary' : ''}`}
                 onClick={() => onSelectMatch(match)}
-                style={{ fontSize: '12px', padding: '6px 12px' }}
+                style={{ fontSize: '11.5px', padding: '6px 12px' }}
               >
                 {isSelected ? (
                   <>
@@ -120,19 +116,19 @@ export const MatchCard: React.FC<MatchCardProps> = ({
               onClick={() => setIsExpanded(!isExpanded)}
               style={{
                 fontSize: '12px',
-                padding: '6px 14px',
-                background: isExpanded ? 'var(--brand-gold-bg)' : 'var(--bg-surface-1)',
+                padding: '6px 12px',
+                background: isExpanded ? 'var(--brand-gold-bg)' : '#FFFFFF',
                 borderColor: isExpanded ? 'var(--brand-gold)' : 'var(--border-default)',
                 color: isExpanded ? 'var(--brand-gold-dark)' : 'var(--text-primary)',
               }}
             >
               {isExpanded ? (
                 <>
-                  Hide Match DNA <ChevronUp size={14} />
+                  Hide Match DNA <ChevronUp size={13} />
                 </>
               ) : (
                 <>
-                  Why this match? <ChevronDown size={14} />
+                  Why this match? <ChevronDown size={13} />
                 </>
               )}
             </button>
@@ -140,7 +136,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
         </div>
       </div>
 
-      {/* Expandable Match DNA Section (Revealed on Demand) */}
+      {/* Expandable Match DNA Section (Hidden initially, revealed on demand) */}
       {isExpanded && <MatchDNA scoreResult={score} />}
     </div>
   );

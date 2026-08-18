@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgRotor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#312e81"/>
+    </linearGradient>
+    <linearGradient id="yarnCone" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#e0e7ff"/>
+      <stop offset="100%" stop-color="#c7d2fe"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="300" fill="url(#bgRotor)"/>
+
+  <!-- Open-End Rotor Spinning Units in Line -->
+  <g fill="#1e1e24" stroke="#4338ca" stroke-width="2">
+    <!-- Rotor Unit 1 -->
+    <rect x="60" y="110" width="100" height="110" rx="4"/>
+    <circle cx="110" cy="165" r="28" fill="#312e81" stroke="#818cf8" stroke-width="2"/>
+    <circle cx="110" cy="165" r="14" fill="#4338ca"/>
+    <!-- Rotor Unit 2 -->
+    <rect x="180" y="110" width="100" height="110" rx="4"/>
+    <circle cx="230" cy="165" r="28" fill="#312e81" stroke="#818cf8" stroke-width="2"/>
+    <circle cx="230" cy="165" r="14" fill="#4338ca"/>
+    <!-- Rotor Unit 3 -->
+    <rect x="300" y="110" width="100" height="110" rx="4"/>
+    <circle cx="350" cy="165" r="28" fill="#312e81" stroke="#818cf8" stroke-width="2"/>
+    <circle cx="350" cy="165" r="14" fill="#4338ca"/>
+  </g>
+
+  <!-- Overhead Package Take-Up Cones of Recycled Yarn -->
+  <g fill="url(#yarnCone)" stroke="#6366f1" stroke-width="1.5">
+    <polygon points="90,40 130,40 120,95 100,95"/>
+    <polygon points="210,40 250,40 240,95 220,95"/>
+    <polygon points="330,40 370,40 360,95 340,95"/>
+  </g>
+
+  <!-- Comber Noil Waste Collection Suction Ducts -->
+  <path d="M 420 220 L 550 220 L 550 60" fill="none" stroke="#a5b4fc" stroke-width="12" stroke-linecap="round"/>
+  <rect x="510" y="40" width="80" height="70" rx="4" fill="#312e81" stroke="#818cf8" stroke-width="2"/>
+
+  <!-- Title Badge -->
+  <rect x="20" y="250" width="290" height="34" rx="4" fill="#0f0e26" opacity="0.95" stroke="#4338ca" stroke-width="1"/>
+  <circle cx="36" cy="267" r="5" fill="#818cf8"/>
+  <text x="50" y="271" fill="#e0e7ff" font-family="system-ui, sans-serif" font-size="12" font-weight="700">Open-End Rotor Spinning &amp; Yarn Works</text>
+</svg>

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { MatchRecord } from '../../types/index.js';
 import { MatchCard } from './MatchCard.js';
-import { Filter, Inbox } from 'lucide-react';
+import { Filter, Search, Inbox } from 'lucide-react';
 
 interface MatchListProps {
   matches: MatchRecord[];
@@ -54,18 +54,17 @@ export const MatchList: React.FC<MatchListProps> = ({
 
   return (
     <div>
-      {/* Filter & Controls Bar */}
-      <div className="filter-bar">
-        <div className="filter-group">
+      {/* Balanced Filter Bar without Viable Count & with Expanded Search Bar */}
+      <div className="filter-bar-expanded">
+        <div className="filter-group-item">
           <Filter size={14} color="var(--text-tertiary)" />
           <span className="filter-label">Category:</span>
           <select
-            className="form-select"
-            style={{ padding: '6px 10px', fontSize: '12px' }}
+            className="form-select filter-select-compact"
             value={selectedCategory}
             onChange={e => setSelectedCategory(e.target.value)}
           >
-            <option value="ALL">All Categories ({matches.length})</option>
+            <option value="ALL">All Categories</option>
             <option value="PLASTIC">Plastic</option>
             <option value="TEXTILE">Textile</option>
             <option value="METAL">Metal</option>
@@ -74,33 +73,29 @@ export const MatchList: React.FC<MatchListProps> = ({
           </select>
         </div>
 
-        <div className="filter-group">
-          <span className="filter-label">Min Score:</span>
+        <div className="filter-group-item">
+          <span className="filter-label">Match Tier:</span>
           <select
-            className="form-select"
-            style={{ padding: '6px 10px', fontSize: '12px' }}
+            className="form-select filter-select-compact"
             value={minScoreFilter}
             onChange={e => setMinScoreFilter(Number(e.target.value))}
           >
-            <option value={40}>All Viable Matches (≥ 40)</option>
-            <option value={70}>High Compatibility Only (≥ 70)</option>
-            <option value={85}>Top Ranked (≥ 85)</option>
+            <option value={40}>Good matches</option>
+            <option value={70}>Strong matches</option>
+            <option value={85}>Top ranked</option>
           </select>
         </div>
 
-        <div className="filter-group" style={{ flex: 1, maxWidth: '280px' }}>
+        {/* Expanded Search Bar filling horizontal space smoothly */}
+        <div className="filter-search-wrap">
+          <Search size={14} className="filter-search-icon" />
           <input
             type="text"
-            className="form-input"
-            style={{ padding: '6px 10px', fontSize: '12px', width: '100%' }}
-            placeholder="Search by city, enterprise, material..."
+            className="form-input filter-search-input"
+            placeholder="Search by enterprise, city, or material stream..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
           />
-        </div>
-
-        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--text-secondary)' }}>
-          Showing <strong>{filteredMatches.length}</strong> viable matches
         </div>
       </div>
 
@@ -108,7 +103,7 @@ export const MatchList: React.FC<MatchListProps> = ({
       {filteredMatches.length === 0 ? (
         <div
           style={{
-            background: 'var(--bg-surface-1)',
+            background: '#FFFFFF',
             border: '1px dashed var(--border-default)',
             borderRadius: 'var(--radius-md)',
             padding: '60px 20px',
@@ -121,7 +116,7 @@ export const MatchList: React.FC<MatchListProps> = ({
             No Matches Found
           </div>
           <div style={{ fontSize: '12px', marginTop: '4px' }}>
-            No candidate pairs passed the hazard/material gates and minimum threshold (≥ {minScoreFilter}).
+            No candidate pairs passed the active filters.
           </div>
         </div>
       ) : (

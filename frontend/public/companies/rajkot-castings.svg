@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgCast" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#18181b"/>
+      <stop offset="100%" stop-color="#27272a"/>
+    </linearGradient>
+    <linearGradient id="moltenMetal" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="50%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="300" fill="url(#bgCast)"/>
+
+  <!-- High-Tonnage Die Casting Machine Platen -->
+  <rect x="120" y="40" width="60" height="180" rx="4" fill="#3f3f46" stroke="#71717a" stroke-width="2"/>
+  <rect x="280" y="40" width="60" height="180" rx="4" fill="#3f3f46" stroke="#71717a" stroke-width="2"/>
+  
+  <!-- Tie Bars -->
+  <line x1="80" y1="60" x2="360" y2="60" stroke="#a1a1aa" stroke-width="8"/>
+  <line x1="80" y1="190" x2="360" y2="190" stroke="#a1a1aa" stroke-width="8"/>
+
+  <!-- Die Casting Mould with Molten Pour -->
+  <rect x="180" y="70" width="100" height="120" fill="#18181b" stroke="#ef4444" stroke-width="2"/>
+  <path d="M 230 70 L 230 190" stroke="url(#moltenMetal)" stroke-width="6"/>
+
+  <!-- Robotic Pouring Ladle -->
+  <path d="M 380 40 L 460 70 L 440 100 L 370 70 Z" fill="#52525b" stroke="#71717a" stroke-width="2"/>
+  <path d="M 370 70 Q 300 65 235 70" fill="none" stroke="url(#moltenMetal)" stroke-width="5"/>
+
+  <!-- Finished Casted Aluminium Engine / Gearbox Housings -->
+  <g fill="#71717a" stroke="#cbd5e1" stroke-width="1.5">
+    <rect x="440" y="140" width="110" height="70" rx="6"/>
+    <circle cx="475" cy="175" r="18" fill="#27272a"/>
+    <circle cx="520" cy="160" r="10" fill="#27272a"/>
+    <circle cx="520" cy="190" r="8" fill="#27272a"/>
+  </g>
+
+  <!-- Title Badge -->
+  <rect x="20" y="250" width="290" height="34" rx="4" fill="#09090b" opacity="0.95" stroke="#71717a" stroke-width="1"/>
+  <circle cx="36" cy="267" r="5" fill="#f97316"/>
+  <text x="50" y="271" fill="#f4f4f5" font-family="system-ui, sans-serif" font-size="12" font-weight="700">High-Pressure Aluminium Die Casting Foundry</text>
+</svg>
