@@ -1,149 +1,157 @@
 import React from 'react';
 import {
-  Home,
-  Layers,
-  PlusCircle,
+  LayoutDashboard,
+  GitCompareArrows,
+  FilePlus2,
   BarChart3,
   Building2,
-  Cpu,
+  Info,
+  HelpCircle,
+  Mail,
   X,
 } from 'lucide-react';
-import { DemoScenario } from '../../types/index.js';
 
 interface SidebarProps {
-  activeTab: 'OVERVIEW' | 'MATCHES' | 'LISTING' | 'IMPACT' | 'POOL';
-  onSelectTab: (tab: 'OVERVIEW' | 'MATCHES' | 'LISTING' | 'IMPACT' | 'POOL') => void;
-  matchesCount: number;
-  listingsCount: number;
-  selectedMatchesCount: number;
-  selectedScenarioId?: string;
-  onSelectScenario?: (scenario: DemoScenario) => void;
-  onResetData?: () => void;
-  isResetting?: boolean;
-  isOpenMobile?: boolean;
-  onCloseMobile?: () => void;
+  activeTab: string;
+  onSelectTab: (tab: string) => void;
+  matchesCount?: number;
+  listingsCount?: number;
+  isOpenMobile: boolean;
+  onCloseMobile: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({
+interface NavItem {
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean | 'true' | 'false' }>;
+  showBadge?: 'matches' | 'listings';
+}
+
+const navItems: NavItem[] = [
+  { id: 'OVERVIEW', label: 'Overview', icon: LayoutDashboard },
+  { id: 'MATCHES', label: 'Ranked Matches', icon: GitCompareArrows, showBadge: 'matches' },
+  { id: 'LISTING', label: 'Create Listing', icon: FilePlus2 },
+  { id: 'IMPACT', label: 'Impact Dashboard', icon: BarChart3 },
+  { id: 'DIRECTORY', label: 'Enterprise Directory', icon: Building2, showBadge: 'listings' },
+];
+
+const infoItems = [
+  { id: 'ABOUT', label: 'About Us', icon: Info },
+  { id: 'FAQS', label: 'FAQs', icon: HelpCircle },
+  { id: 'CONTACT', label: 'Contact Us', icon: Mail },
+] as const;
+
+export function Sidebar({
   activeTab,
   onSelectTab,
-  matchesCount,
-  listingsCount,
-  selectedMatchesCount,
-  isOpenMobile = false,
+  matchesCount = 0,
+  listingsCount = 0,
+  isOpenMobile,
   onCloseMobile,
-}) => {
+}: SidebarProps) {
+  const handleNav = (tabId: string) => {
+    onSelectTab(tabId);
+    onCloseMobile();
+  };
+
   return (
     <>
       {/* Mobile Backdrop */}
       {isOpenMobile && (
-        <div className="sidebar-backdrop" onClick={onCloseMobile} />
+        <div
+          className="sidebar-overlay"
+          onClick={onCloseMobile}
+          aria-hidden="true"
+        />
       )}
 
-      <aside className={`app-sidebar ${isOpenMobile ? 'mobile-open' : ''}`}>
-        {/* Sidebar Header / Brand */}
-        <div className="sidebar-brand">
-          <div className="sidebar-brand-left">
-            <div className="brand-logo-icon">
-              <Cpu size={18} />
-            </div>
-            <div className="brand-title-wrap">
-              <div className="brand-title" style={{ fontSize: '15px' }}>
-                CircularMatch
-              </div>
-              <div className="brand-subtitle" style={{ fontSize: '10px' }}>
-                AI Matching Platform
-              </div>
-            </div>
+      <aside className={`sidebar ${isOpenMobile ? 'open' : ''}`}>
+        {/* Sidebar Brand Header */}
+        <div className="sidebar-header">
+          <div className="sidebar-brand">
+            <span className="brand-badge">
+              W<span style={{ color: 'var(--primary)' }}>2</span>
+            </span>
+            <span>
+              Waste<span style={{ color: 'var(--primary)' }}> 2 </span>Worth
+            </span>
           </div>
 
-          {/* Mobile close button */}
-          {onCloseMobile && (
-            <button className="sidebar-mobile-close" onClick={onCloseMobile}>
+          {isOpenMobile && (
+            <button
+              type="button"
+              onClick={onCloseMobile}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'rgba(247, 248, 245, 0.7)',
+                padding: '0.25rem',
+              }}
+              aria-label="Close sidebar"
+            >
               <X size={18} />
             </button>
           )}
         </div>
 
-        {/* Navigation Links */}
-        <nav className="sidebar-nav">
-          <div className="sidebar-section-title">Navigation</div>
-
-          <button
-            className={`sidebar-nav-item ${activeTab === 'OVERVIEW' ? 'active' : ''}`}
-            onClick={() => {
-              onSelectTab('OVERVIEW');
-              if (onCloseMobile) onCloseMobile();
-            }}
-          >
-            <div className="sidebar-nav-item-left">
-              <Home size={17} />
-              <span>Overview</span>
-            </div>
-          </button>
-
-          <button
-            className={`sidebar-nav-item ${activeTab === 'MATCHES' ? 'active' : ''}`}
-            onClick={() => {
-              onSelectTab('MATCHES');
-              if (onCloseMobile) onCloseMobile();
-            }}
-          >
-            <div className="sidebar-nav-item-left">
-              <Layers size={17} />
-              <span>Ranked Matches</span>
-            </div>
-            {matchesCount > 0 && (
-              <span className="sidebar-nav-badge">{matchesCount}</span>
-            )}
-          </button>
-
-          <button
-            className={`sidebar-nav-item ${activeTab === 'LISTING' ? 'active' : ''}`}
-            onClick={() => {
-              onSelectTab('LISTING');
-              if (onCloseMobile) onCloseMobile();
-            }}
-          >
-            <div className="sidebar-nav-item-left">
-              <PlusCircle size={17} />
-              <span>Create Listing</span>
-            </div>
-          </button>
-
-          <button
-            className={`sidebar-nav-item ${activeTab === 'IMPACT' ? 'active' : ''}`}
-            onClick={() => {
-              onSelectTab('IMPACT');
-              if (onCloseMobile) onCloseMobile();
-            }}
-          >
-            <div className="sidebar-nav-item-left">
-              <BarChart3 size={17} />
-              <span>Impact Dashboard</span>
-            </div>
-            {selectedMatchesCount > 0 && (
-              <span className="sidebar-nav-badge active-badge">{selectedMatchesCount}</span>
-            )}
-          </button>
-
-          <button
-            className={`sidebar-nav-item ${activeTab === 'POOL' ? 'active' : ''}`}
-            onClick={() => {
-              onSelectTab('POOL');
-              if (onCloseMobile) onCloseMobile();
-            }}
-          >
-            <div className="sidebar-nav-item-left">
-              <Building2 size={17} />
-              <span>Enterprise Directory</span>
-            </div>
-            {listingsCount > 0 && (
-              <span className="sidebar-nav-badge">{listingsCount}</span>
-            )}
-          </button>
+        {/* Workspace Navigation */}
+        <div className="sidebar-section-title">Workspace</div>
+        <nav className="sidebar-nav" aria-label="Product">
+          {navItems.map(({ id, label, icon: Icon, showBadge }) => {
+            const isActive = activeTab === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => handleNav(id)}
+                className={`sidebar-nav-btn ${isActive ? 'active' : ''}`}
+              >
+                <Icon className="nav-icon" aria-hidden="true" />
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {label}
+                </span>
+                {showBadge === 'matches' && matchesCount > 0 && (
+                  <span className="sidebar-nav-badge">{matchesCount}</span>
+                )}
+                {showBadge === 'listings' && listingsCount > 0 && (
+                  <span className="sidebar-nav-badge">{listingsCount}</span>
+                )}
+              </button>
+            );
+          })}
         </nav>
+
+        {/* Company & Support Navigation */}
+        <div className="sidebar-section-title">Company</div>
+        <nav className="sidebar-nav" aria-label="Company">
+          {infoItems.map(({ id, label, icon: Icon }) => {
+            const isActive = activeTab === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => handleNav(id)}
+                className={`sidebar-nav-btn ${isActive ? 'active' : ''}`}
+              >
+                <Icon className="nav-icon" aria-hidden="true" />
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {label}
+                </span>
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Subtle Prototype Footnote */}
+        <div className="sidebar-footer">
+          <div className="sidebar-prototype-card">
+            <div className="sidebar-prototype-tag">Enterprise Exchange</div>
+            <div className="sidebar-prototype-text">
+              Deterministic 5-factor scoring model for verified industrial by-product streams.
+            </div>
+          </div>
+        </div>
       </aside>
     </>
   );
-};
+}

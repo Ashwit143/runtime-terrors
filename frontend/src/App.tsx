@@ -3,32 +3,38 @@ import { Header } from './components/layout/Header.js';
 import { Sidebar } from './components/layout/Sidebar.js';
 import { Footer } from './components/layout/Footer.js';
 import { Overview } from './components/home/Overview.js';
-import { ListingForm } from './components/listing/ListingForm.js';
 import { MatchList } from './components/matches/MatchList.js';
+import { ListingForm } from './components/listing/ListingForm.js';
 import { ImpactDashboard } from './components/impact/ImpactDashboard.js';
 import { EnterpriseDirectory } from './components/company/EnterpriseDirectory.js';
 import { CompanyDetailModal } from './components/company/CompanyDetailModal.js';
+import { AboutPage } from './components/marketing/AboutPage.js';
+import { FaqsPage } from './components/marketing/FaqsPage.js';
+import { ContactPage } from './components/marketing/ContactPage.js';
 import { AuthDemo } from './components/auth/AuthDemo.js';
-import { DEMO_SCENARIOS } from './data/presetScenarios.js';
-import {
-  Listing,
-  MatchRecord,
-  ImpactSummary,
-  DemoScenario,
-} from './types/index.js';
-import {
-  getAllMatches,
-  simulateMatches,
-} from './api/matches.js';
-import { getListings, createListing, resetDatabase } from './api/listings.js';
+import { Listing, MatchRecord, ImpactSummary } from './types/index.js';
+import { getAllMatches, simulateMatches } from './api/matches.js';
+import { getListings, createListing } from './api/listings.js';
 import { getImpactSummary } from './api/impact.js';
-import { Info } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
+
+export type AppTab =
+  | 'OVERVIEW'
+  | 'MATCHES'
+  | 'LISTING'
+  | 'IMPACT'
+  | 'DIRECTORY'
+  | 'ABOUT'
+  | 'FAQS'
+  | 'CONTACT'
+  | 'AUTH';
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'MATCHES' | 'LISTING' | 'IMPACT' | 'POOL' | 'AUTH'>('OVERVIEW');
+  const [activeTab, setActiveTab] = useState<AppTab>('OVERVIEW');
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
-  const [selectedScenario, setSelectedScenario] = useState<DemoScenario>(DEMO_SCENARIOS[0]);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  // Platform Data from Real Backend
   const [matches, setMatches] = useState<MatchRecord[]>([]);
   const [listings, setListings] = useState<Listing[]>([]);
   const [impactSummary, setImpactSummary] = useState<ImpactSummary>({
@@ -38,14 +44,13 @@ export function App() {
     totalCo2AvoidedTons: 0,
     totalLandfillDivertedTonnes: 0,
   });
-  const [selectedMatches, setSelectedMatches] = useState<MatchRecord[]>([]);
-  const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [isResetting, setIsResetting] = useState<boolean>(false);
-  const [systemMessage, setSystemMessage] = useState<string | null>(null);
 
-  // Load initial platform data
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Load platform data on mount
   const loadPlatformData = async () => {
     try {
       setIsLoading(true);
@@ -58,7 +63,7 @@ export function App() {
       setListings(fetchedListings);
       setImpactSummary(fetchedImpact);
     } catch (err) {
-      console.error('Error fetching initial platform data:', err);
+      console.error('Failed to load platform data from backend:', err);
     } finally {
       setIsLoading(false);
     }
@@ -68,179 +73,131 @@ export function App() {
     loadPlatformData();
   }, []);
 
-  // Handle Scenario Preset Selection
-  const handleSelectScenario = async (scenario: DemoScenario) => {
-    setSelectedScenario(scenario);
-    try {
-      setIsLoading(true);
-      const result = await simulateMatches(scenario.targetListing);
-      setMatches(result.matches);
-      setActiveTab('MATCHES');
-      setSystemMessage(`Loaded scenario: "${scenario.name}". Evaluated through Gate 1 & Gate 2.`);
-      setTimeout(() => setSystemMessage(null), 5000);
-    } catch (err) {
-      console.error('Failed to simulate scenario:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Handle Listing Submission
+  // Handle new listing registration and live simulation
   const handleListingSubmit = async (listingData: Partial<Listing>) => {
     try {
       setIsSubmitting(true);
+      
+      // 1. Simulate matches with real 5-factor backend engine
       const simResult = await simulateMatches(listingData);
       setMatches(simResult.matches);
 
+      // 2. Persist listing to backend database
       await createListing(listingData);
       const updatedListings = await getListings();
       setListings(updatedListings);
 
+      // 3. Switch to Ranked Matches and alert user
       setActiveTab('MATCHES');
-      setSystemMessage(`Listing registered! Found ${simResult.matches.length} qualified matches passing all gates.`);
-      setTimeout(() => setSystemMessage(null), 5000);
+      setToastMessage(`Listing published! Found ${simResult.matches.length} qualified exchange matches.`);
+      setTimeout(() => setToastMessage(null), 5000);
     } catch (err) {
-      console.error('Error submitting listing:', err);
-      alert('Failed to process listing. Please verify required fields.');
+      console.error('Error processing listing:', err);
+      alert('Failed to process listing. Please check the required fields.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Handle Match Selection for Custom Impact
-  const handleToggleSelectMatch = (match: MatchRecord) => {
-    const exists = selectedMatches.some(m => m.matchId === match.matchId);
-    if (exists) {
-      setSelectedMatches(selectedMatches.filter(m => m.matchId !== match.matchId));
-    } else {
-      setSelectedMatches([...selectedMatches, match]);
-    }
+  // Navigate tab & scroll top
+  const handleNavigateTab = (tabId: string) => {
+    setActiveTab(tabId as AppTab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Reset database
-  const handleReset = async () => {
-    try {
-      setIsResetting(true);
-      await resetDatabase();
-      await loadPlatformData();
-      setSelectedMatches([]);
-      setSystemMessage('System restored to default Indian industrial seed dataset.');
-      setTimeout(() => setSystemMessage(null), 4000);
-    } catch (err) {
-      console.error('Reset failed:', err);
-    } finally {
-      setIsResetting(false);
-    }
-  };
-
-  // Handle top header section navigation (e.g. #about, #faqs, #contact)
-  const handleNavigateToSection = (sectionId: string) => {
-    setActiveTab('OVERVIEW');
-    setTimeout(() => {
-      const el = document.getElementById(sectionId);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }, 50);
-  };
-
-  // Handle opening Auth demo page
+  // Open Auth demo
   const handleOpenAuth = (mode: 'login' | 'signup') => {
     setAuthMode(mode);
     setActiveTab('AUTH');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Selected company object for modal
   const selectedListingObject = selectedCompanyId
-    ? listings.find(l => l.id === selectedCompanyId) || null
+    ? listings.find((l) => l.id === selectedCompanyId) || null
     : null;
 
   return (
     <div className="app-layout">
-      {/* 1. Left Sidebar Navigation */}
+      {/* 1. Sidebar Navigation (Pure B2B Platform) */}
       <Sidebar
         activeTab={activeTab === 'AUTH' ? 'OVERVIEW' : activeTab}
-        onSelectTab={tab => setActiveTab(tab)}
+        onSelectTab={handleNavigateTab}
         matchesCount={matches.length}
         listingsCount={listings.length}
-        selectedMatchesCount={selectedMatches.length}
-        selectedScenarioId={selectedScenario.id}
-        onSelectScenario={handleSelectScenario}
-        onResetData={handleReset}
-        isResetting={isResetting}
         isOpenMobile={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
       />
 
-      {/* 2. Main Content Wrapper */}
+      {/* 2. Main Area */}
       <div className="app-main-wrapper">
-        {/* Top Header */}
         <Header
-          onNavigateToSection={handleNavigateToSection}
+          activeTab={activeTab}
+          onNavigateTab={handleNavigateTab}
           onOpenAuth={handleOpenAuth}
           onToggleMobileSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
         />
 
-        {/* Content Body */}
         <main className="main-content-area">
-          {/* System Notification Banner */}
-          {systemMessage && (
+          {/* Toast Notification */}
+          {toastMessage && (
             <div
               style={{
-                background: '#FFFFFF',
-                border: '1px solid var(--brand-gold-border)',
-                borderRadius: 'var(--radius-sm)',
-                padding: '12px 18px',
-                marginBottom: '20px',
-                fontSize: '13px',
-                color: 'var(--brand-gold-dark)',
+                margin: '1rem 1.5rem 0 1.5rem',
+                backgroundColor: 'var(--surface)',
+                border: '1px solid var(--border-strong)',
+                borderLeft: '4px solid var(--primary)',
+                borderRadius: 'var(--radius-md)',
+                padding: '0.75rem 1rem',
+                fontSize: '0.8125rem',
+                color: 'var(--navy)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '10px',
+                gap: '0.5rem',
                 boxShadow: 'var(--shadow-sm)',
               }}
             >
-              <Info size={16} />
-              {systemMessage}
+              <CheckCircle2 size={16} style={{ color: 'var(--primary)' }} />
+              {toastMessage}
             </div>
           )}
 
-          {/* View: Auth Demo Notice Page */}
+          {/* View: Auth Demo */}
           {activeTab === 'AUTH' && (
             <AuthDemo
               mode={authMode}
               onBack={() => setActiveTab('OVERVIEW')}
+              onEnterWorkspace={() => setActiveTab('MATCHES')}
             />
           )}
 
           {/* View: Home / Overview */}
           {activeTab === 'OVERVIEW' && (
             <Overview
-              onNavigateToMatches={() => setActiveTab('MATCHES')}
-              onNavigateToListing={() => setActiveTab('LISTING')}
-              totalListingsCount={listings.length}
-              totalMatchesCount={matches.length}
+              onNavigateToMatches={() => handleNavigateTab('MATCHES')}
+              onNavigateToListing={() => handleNavigateTab('LISTING')}
+              onNavigateToImpact={() => handleNavigateTab('IMPACT')}
             />
           )}
 
           {/* View: Ranked Matches */}
           {activeTab === 'MATCHES' && (
             <div>
-              <div className="section-header">
-                <div>
-                  <h2 className="section-title">Ranked Circular Waste Exchanges</h2>
-                  <div className="section-subtitle">
-                    Pre-filtered by Hazard & Material compatibility gates, scored across 5 factors, thresholded (≥ 40).
+              <div className="page-header">
+                <div className="page-header-container">
+                  <div>
+                    <p className="label-caps">Deterministic Matching Engine</p>
+                    <h1 className="page-header-title">Ranked Circular Waste Exchanges</h1>
+                    <p className="page-header-desc">
+                      Pairings sorted by weighted score across 5 deterministic factors. Hazardous streams without licensed receivers and incompatible materials are pre-filtered; scores below 40 are excluded.
+                    </p>
                   </div>
                 </div>
               </div>
 
               <MatchList
                 matches={matches}
-                onSelectMatch={handleToggleSelectMatch}
-                onViewCompanyDetails={id => setSelectedCompanyId(id)}
-                selectedMatchIds={selectedMatches.map(m => m.matchId)}
+                onViewCompanyDetails={(id) => setSelectedCompanyId(id)}
                 isLoading={isLoading}
               />
             </div>
@@ -249,17 +206,19 @@ export function App() {
           {/* View: Create Listing */}
           {activeTab === 'LISTING' && (
             <div>
-              <div className="section-header">
-                <div>
-                  <h2 className="section-title">Industrial Waste & Demand Registration</h2>
-                  <div className="section-subtitle">
-                    Select your mode below to register a byproduct stream or request input raw materials.
+              <div className="page-header">
+                <div className="page-header-container">
+                  <div>
+                    <p className="label-caps">By-Product & Material Registry</p>
+                    <h1 className="page-header-title">Create Industrial Listing</h1>
+                    <p className="page-header-desc">
+                      Select your mode below to register a by-product stream or request secondary raw materials.
+                    </p>
                   </div>
                 </div>
               </div>
 
               <ListingForm
-                initialData={selectedScenario.targetListing}
                 onSubmit={handleListingSubmit}
                 isLoading={isSubmitting}
               />
@@ -270,28 +229,30 @@ export function App() {
           {activeTab === 'IMPACT' && (
             <ImpactDashboard
               summary={impactSummary}
-              selectedMatches={selectedMatches}
             />
           )}
 
-          {/* View: Enterprise Directory (Two-Section Industrial Cards) */}
-          {activeTab === 'POOL' && (
+          {/* View: Enterprise Directory */}
+          {activeTab === 'DIRECTORY' && (
             <EnterpriseDirectory
               listings={listings}
-              onSelectCompany={id => setSelectedCompanyId(id)}
+              onSelectCompany={(id) => setSelectedCompanyId(id)}
             />
           )}
+
+          {/* View: About Us */}
+          {activeTab === 'ABOUT' && <AboutPage />}
+
+          {/* View: FAQs */}
+          {activeTab === 'FAQS' && <FaqsPage />}
+
+          {/* View: Contact Us */}
+          {activeTab === 'CONTACT' && <ContactPage />}
         </main>
 
-        {/* 3. Global Footer (On all pages except AUTH demo) */}
+        {/* 3. Global Footer (Excluded on Auth Demo) */}
         {activeTab !== 'AUTH' && (
-          <Footer
-            onNavigateTab={tab => {
-              setActiveTab(tab);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            onNavigateSection={handleNavigateToSection}
-          />
+          <Footer onNavigateTab={handleNavigateTab} />
         )}
       </div>
 

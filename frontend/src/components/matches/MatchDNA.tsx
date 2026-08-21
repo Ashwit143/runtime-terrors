@@ -13,11 +13,11 @@ export const MatchDNA: React.FC<MatchDNAProps> = ({ scoreResult }) => {
     <div className="match-dna-container">
       <div className="dna-header">
         <div className="dna-title">
-          <Cpu size={16} color="var(--brand-gold-dark)" />
+          <Cpu size={16} color="var(--color-primary)" />
           Match DNA — Explainable 5-Factor Scoring Breakdown
         </div>
         <div className="engine-status-indicator" style={{ fontSize: '11px', background: '#FFFFFF', borderColor: 'var(--border-default)', color: 'var(--text-secondary)' }}>
-          <ShieldCheck size={14} color="var(--brand-gold-dark)" />
+          <ShieldCheck size={14} color="var(--color-primary)" />
           100% Deterministic & Mathematically Auditable
         </div>
       </div>
@@ -44,7 +44,7 @@ export const MatchDNA: React.FC<MatchDNAProps> = ({ scoreResult }) => {
                 </div>
               </div>
 
-              {/* Champagne Gold Progress Meter */}
+              {/* Progress Meter */}
               <div className="factor-bar-bg">
                 <div
                   className="factor-bar-fill"
@@ -52,9 +52,9 @@ export const MatchDNA: React.FC<MatchDNAProps> = ({ scoreResult }) => {
                     width: `${scorePercent}%`,
                     backgroundColor:
                       factor.rawScore >= 70
-                        ? 'var(--brand-gold)'
+                        ? 'var(--color-secondary)'
                         : factor.rawScore >= 40
-                        ? 'var(--brand-gold-light)'
+                        ? 'var(--score-moderate)'
                         : 'var(--score-low)',
                   }}
                 />

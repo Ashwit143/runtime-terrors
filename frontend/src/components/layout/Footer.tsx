@@ -1,75 +1,84 @@
 import React from 'react';
-import { Cpu } from 'lucide-react';
 
 interface FooterProps {
-  onNavigateTab: (tab: 'OVERVIEW' | 'MATCHES' | 'LISTING' | 'IMPACT' | 'POOL') => void;
-  onNavigateSection: (sectionId: string) => void;
+  onNavigateTab: (tab: string) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({
-  onNavigateTab,
-  onNavigateSection,
-}) => {
+const groups = [
+  {
+    title: 'Platform',
+    links: [
+      { id: 'MATCHES', label: 'Ranked Matches' },
+      { id: 'LISTING', label: 'Create Listing' },
+      { id: 'IMPACT', label: 'Impact Dashboard' },
+      { id: 'DIRECTORY', label: 'Enterprise Directory' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { id: 'ABOUT', label: 'About Us' },
+      { id: 'FAQS', label: 'FAQs' },
+      { id: 'CONTACT', label: 'Contact Us' },
+    ],
+  },
+] as const;
+
+export function Footer({ onNavigateTab }: FooterProps) {
   return (
-    <footer className="global-app-footer">
-      <div className="footer-top-grid">
-        {/* Brand Column */}
-        <div className="footer-brand-col">
-          <div className="footer-brand-title">
-            <div className="brand-logo-icon" style={{ width: '26px', height: '26px', background: '#33322E' }}>
-              <Cpu size={14} color="var(--brand-gold-light)" />
-            </div>
-            <span>CircularMatch AI</span>
-          </div>
-          <p className="footer-brand-desc">
-            Deterministic, 100% explainable industrial waste-exchange matching platform for the circular economy.
+    <footer className="global-footer">
+      <div className="footer-inner">
+        <div>
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.9375rem', fontWeight: 700, letterSpacing: '-0.01em' }}>
+            Waste<span style={{ color: 'var(--primary)' }}> 2 </span>Worth
           </p>
-          <div className="footer-demo-tag">
-            IIC 3.0 Open Innovation Prototype
+          <p style={{ marginTop: '0.5rem', maxWidth: '20rem', fontSize: '0.75rem', lineHeight: 1.5, color: 'rgba(247, 248, 245, 0.65)' }}>
+            An industrial waste-exchange matching platform connecting enterprises to exchange, reuse, and create value from industrial by-products.
+          </p>
+        </div>
+
+        {groups.map((group) => (
+          <div key={group.title}>
+            <p className="label-caps" style={{ color: 'rgba(247, 248, 245, 0.55)' }}>
+              {group.title}
+            </p>
+            <ul style={{ listStyle: 'none', marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              {group.links.map((link) => (
+                <li key={link.id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onNavigateTab(link.id);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'rgba(247, 248, 245, 0.75)',
+                      fontSize: '0.75rem',
+                      cursor: 'pointer',
+                      padding: 0,
+                      textAlign: 'left',
+                      transition: 'color 0.15s ease',
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--primary)')}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(247, 248, 245, 0.75)')}
+                  >
+                    {link.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
-
-        {/* Product Links */}
-        <div className="footer-links-col">
-          <div className="footer-col-header">Product</div>
-          <ul className="footer-links-list">
-            <li>
-              <button onClick={() => onNavigateTab('LISTING')}>Create Listing</button>
-            </li>
-            <li>
-              <button onClick={() => onNavigateTab('MATCHES')}>Ranked Matches</button>
-            </li>
-            <li>
-              <button onClick={() => onNavigateTab('IMPACT')}>Impact Dashboard</button>
-            </li>
-            <li>
-              <button onClick={() => onNavigateTab('POOL')}>Enterprise Directory</button>
-            </li>
-          </ul>
-        </div>
-
-        {/* Company Links */}
-        <div className="footer-links-col">
-          <div className="footer-col-header">Platform</div>
-          <ul className="footer-links-list">
-            <li>
-              <button onClick={() => onNavigateSection('about')}>About Us</button>
-            </li>
-            <li>
-              <button onClick={() => onNavigateSection('faqs')}>FAQs</button>
-            </li>
-            <li>
-              <button onClick={() => onNavigateSection('contact')}>Contact Us</button>
-            </li>
-          </ul>
-        </div>
+        ))}
       </div>
 
-      {/* Footer Bottom Bar */}
-      <div className="footer-bottom-bar">
-        <div>© 2026 CircularMatch AI. Built for hackathon demonstration.</div>
-        <div>All seed industrial exchange data is synthetic.</div>
+      <div className="footer-bottom">
+        <div className="footer-bottom-inner">
+          <p>© {new Date().getFullYear()} Waste 2 Worth — Industrial Circularity Platform</p>
+          <p style={{ color: 'rgba(247, 248, 245, 0.45)' }}>B2B By-product Exchange</p>
+        </div>
       </div>
     </footer>
   );
-};
+}

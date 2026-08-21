@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { MatchRecord } from '../../types/index.js';
 import { MatchCard } from './MatchCard.js';
-import { Filter, Search, Inbox } from 'lucide-react';
 
 interface MatchListProps {
   matches: MatchRecord[];
@@ -11,125 +10,122 @@ interface MatchListProps {
   isLoading?: boolean;
 }
 
-export const MatchList: React.FC<MatchListProps> = ({
-  matches,
-  onSelectMatch,
-  onViewCompanyDetails,
-  selectedMatchIds = [],
-  isLoading = false,
-}) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
-  const [minScoreFilter, setMinScoreFilter] = useState<number>(40);
-  const [searchQuery, setSearchQuery] = useState<string>('');
+type FilterBand = 'ALL' | 'TOP_RANKED' | 'MODERATE';
 
+export function MatchList({
+  matches,
+  onViewCompanyDetails,
+  isLoading = false,
+}: MatchListProps) {
+  const [filterBand, setFilterBand] = useState<FilterBand>('ALL');
+
+  // Filter matches based on clean tabs
   const filteredMatches = useMemo(() => {
-    return matches.filter(m => {
-      // Category filter
-      if (selectedCategory !== 'ALL' && m.supplier.category !== selectedCategory) {
-        return false;
-      }
-      // Score filter
-      if (m.score.overallScore < minScoreFilter) {
-        return false;
-      }
-      // Search query
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        const text = `${m.supplier.companyName} ${m.receiver.companyName} ${m.supplier.materialName} ${m.supplier.city} ${m.receiver.city}`.toLowerCase();
-        if (!text.includes(q)) return false;
-      }
+    return matches.filter((m) => {
+      const score = m.score.overallScore;
+      if (filterBand === 'TOP_RANKED') return score >= 70;
+      if (filterBand === 'MODERATE') return score >= 40 && score < 70;
       return true;
     });
-  }, [matches, selectedCategory, minScoreFilter, searchQuery]);
+  }, [matches, filterBand]);
 
   if (isLoading) {
     return (
-      <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-secondary)' }}>
-        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '13px' }}>
-          Filtering through Gate 1 (Hazard) & Gate 2 (Material) and computing 5-factor scores...
-        </div>
+      <div style={{ padding: '3rem 1.5rem', textAlign: 'center', color: 'var(--muted-foreground)' }}>
+        <p style={{ fontSize: '0.875rem' }}>Evaluating candidate pairings across 5-factor deterministic model...</p>
       </div>
     );
   }
 
   return (
-    <div>
-      {/* Balanced Filter Bar without Viable Count & with Expanded Search Bar */}
-      <div className="filter-bar-expanded">
-        <div className="filter-group-item">
-          <Filter size={14} color="var(--text-tertiary)" />
-          <span className="filter-label">Category:</span>
-          <select
-            className="form-select filter-select-compact"
-            value={selectedCategory}
-            onChange={e => setSelectedCategory(e.target.value)}
-          >
-            <option value="ALL">All Categories</option>
-            <option value="PLASTIC">Plastic</option>
-            <option value="TEXTILE">Textile</option>
-            <option value="METAL">Metal</option>
-            <option value="FOOD_AGRO">Food & Agro</option>
-            <option value="CHEMICAL">Chemical / Solvents</option>
-          </select>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '1.5rem' }}>
+      {/* Filter Bar */}
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '1rem',
+          marginBottom: '1.5rem',
+          paddingBottom: '1rem',
+          borderBottom: '1px solid var(--border)',
+        }}
+      >
+        {/* Score Band Tabs */}
+        <div
+          role="group"
+          aria-label="Filter by score band"
+          style={{
+            display: 'inline-flex',
+            backgroundColor: 'var(--surface)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-md)',
+            padding: '0.1875rem',
+          }}
+        >
+          {(
+            [
+              { key: 'ALL', label: 'All' },
+              { key: 'TOP_RANKED', label: 'Top Ranked' },
+              { key: 'MODERATE', label: '40–69' },
+            ] as const
+          ).map((tab) => {
+            const isSelected = filterBand === tab.key;
+            return (
+              <button
+                key={tab.key}
+                type="button"
+                aria-pressed={isSelected}
+                onClick={() => setFilterBand(tab.key)}
+                style={{
+                  padding: '0.375rem 0.875rem',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  borderRadius: 'var(--radius-sm)',
+                  border: 'none',
+                  backgroundColor: isSelected ? 'var(--brand-blue-soft)' : 'transparent',
+                  color: isSelected ? 'var(--brand-blue)' : 'var(--muted-foreground)',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
 
-        <div className="filter-group-item">
-          <span className="filter-label">Match Tier:</span>
-          <select
-            className="form-select filter-select-compact"
-            value={minScoreFilter}
-            onChange={e => setMinScoreFilter(Number(e.target.value))}
-          >
-            <option value={40}>Good matches</option>
-            <option value={70}>Strong matches</option>
-            <option value={85}>Top ranked</option>
-          </select>
-        </div>
-
-        {/* Expanded Search Bar filling horizontal space smoothly */}
-        <div className="filter-search-wrap">
-          <Search size={14} className="filter-search-icon" />
-          <input
-            type="text"
-            className="form-input filter-search-input"
-            placeholder="Search by enterprise, city, or material stream..."
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-          />
+        <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>
+          Showing {filteredMatches.length} qualified exchange{filteredMatches.length === 1 ? '' : 's'}
         </div>
       </div>
 
-      {/* Match Cards List */}
+      {/* Matches List */}
       {filteredMatches.length === 0 ? (
         <div
-          style={{
-            background: '#FFFFFF',
-            border: '1px dashed var(--border-default)',
-            borderRadius: 'var(--radius-md)',
-            padding: '60px 20px',
-            textAlign: 'center',
-            color: 'var(--text-tertiary)',
-          }}
+          className="card-soft"
+          style={{ padding: '3rem 1.5rem', textAlign: 'center', color: 'var(--muted-foreground)' }}
         >
-          <Inbox size={36} style={{ margin: '0 auto 12px auto', opacity: 0.5 }} />
-          <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text-primary)' }}>
-            No Matches Found
-          </div>
-          <div style={{ fontSize: '12px', marginTop: '4px' }}>
-            No candidate pairs passed the active filters.
-          </div>
+          <p style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--navy)' }}>
+            No matches found in this score range.
+          </p>
+          <p style={{ fontSize: '0.8125rem', marginTop: '0.25rem' }}>
+            Try switching to 'All' or register a new waste/demand listing.
+          </p>
         </div>
       ) : (
-        filteredMatches.map(match => (
-          <MatchCard
-            key={match.matchId}
-            match={match}
-            onSelectMatch={onSelectMatch}
-            onViewCompanyDetails={onViewCompanyDetails}
-            isSelected={selectedMatchIds.includes(match.matchId)}
-          />
-        ))
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          {filteredMatches.map((match, index) => (
+            <MatchCard
+              key={match.matchId || `${match.supplier.id}-${match.receiver.id}`}
+              match={match}
+              rank={index + 1}
+              onViewCompanyDetails={onViewCompanyDetails}
+            />
+          ))}
+        </div>
       )}
     </div>
   );
-};
+}

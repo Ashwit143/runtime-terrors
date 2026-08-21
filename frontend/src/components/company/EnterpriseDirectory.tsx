@@ -1,130 +1,84 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Listing } from '../../types/index.js';
-import { getCompanyImage, FALLBACK_INDUSTRIAL_IMAGE } from '../../data/companyImages.js';
-import { MapPin, ArrowRight, Package, Truck } from 'lucide-react';
+import { CompanyCard } from './CompanyCard.js';
 
 interface EnterpriseDirectoryProps {
   listings: Listing[];
-  onSelectCompany: (companyId: string) => void;
+  onSelectCompany: (id: string) => void;
 }
 
-export const EnterpriseDirectory: React.FC<EnterpriseDirectoryProps> = ({
-  listings,
-  onSelectCompany,
-}) => {
-  const suppliers = listings.filter(l => l.type === 'SUPPLIER');
-  const receivers = listings.filter(l => l.type === 'RECEIVER');
+export function EnterpriseDirectory({ listings, onSelectCompany }: EnterpriseDirectoryProps) {
+  const suppliers = useMemo(() => listings.filter((l) => l.type === 'SUPPLIER'), [listings]);
+  const receivers = useMemo(() => listings.filter((l) => l.type === 'RECEIVER'), [listings]);
 
-  // Semantic Quality Badge Class
-  const getQualityBadgeClass = (grade: string) => {
-    if (grade === 'HIGH') return 'quality-badge-high';
-    if (grade === 'MEDIUM') return 'quality-badge-medium';
-    return 'quality-badge-low';
-  };
-
-  const renderCompanyCard = (item: Listing) => {
-    const imageUrl = getCompanyImage(item.id, item.category);
-
-    return (
-      <div
-        key={item.id}
-        className="company-image-card"
-        onClick={() => onSelectCompany(item.id)}
-      >
-        {/* Real Industrial Facility Image with Fallback */}
-        <div className="company-card-image-wrap">
-          <img
-            src={imageUrl}
-            alt={item.companyName}
-            className="company-card-img"
-            loading="lazy"
-            onError={(e) => {
-              e.currentTarget.onerror = null;
-              e.currentTarget.src = FALLBACK_INDUSTRIAL_IMAGE;
-            }}
-          />
-          <div className="company-card-badge-overlay">
-            <span className="company-card-category">{item.category}</span>
-          </div>
-        </div>
-
-        {/* Card Body */}
-        <div className="company-card-body">
+  return (
+    <div>
+      {/* 1. Page Header */}
+      <div className="page-header">
+        <div className="page-header-container">
           <div>
-            <h4 className="company-card-title">{item.companyName}</h4>
-            <div className="company-card-location">
-              <MapPin size={12} color="var(--brand-gold-dark)" />
-              <span>{item.city}{item.state ? `, ${item.state}` : ''}</span>
-            </div>
-          </div>
-
-          <div className="company-card-material-info">
-            <div className="company-card-material-name">{item.materialName}</div>
-            <div className="company-card-specs-row">
-              <span className={`quality-badge ${getQualityBadgeClass(item.qualityGrade)}`}>
-                {item.qualityGrade} Grade
-              </span>
-              <span className="company-card-qty">
-                {item.quantity} {item.unit}
-              </span>
-            </div>
-          </div>
-
-          <div className="company-card-action-bar">
-            <span className="company-card-action-text">
-              View Details <ArrowRight size={12} />
-            </span>
+            <p className="label-caps">Network Registry</p>
+            <h1 className="page-header-title">Enterprise Directory</h1>
+            <p className="page-header-desc">
+              Browse verified industrial waste suppliers and manufacturing material receivers active across Indian industrial corridors.
+            </p>
           </div>
         </div>
       </div>
-    );
-  };
 
-  return (
-    <div className="enterprise-directory-wrap">
-      {/* SECTION 1: WASTE SUPPLIERS */}
-      <section className="directory-section">
-        <div className="directory-section-header">
-          <div className="directory-section-title-wrap">
-            <div className="directory-section-icon supplier-icon">
-              <Package size={16} />
-            </div>
-            <div>
-              <h2 className="directory-section-title">Waste Suppliers</h2>
-              <p className="directory-section-subtitle">
-                Manufacturing facilities offering industrial byproducts, scrap, and circular feedstocks.
-              </p>
-            </div>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+        {/* Section 1: Waste Suppliers */}
+        <section>
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>
+            <h2 style={{ fontSize: '1.125rem', fontWeight: 600 }}>Waste Suppliers</h2>
+            <span style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>
+              {suppliers.length} Registered Facilities
+            </span>
           </div>
-          <span className="directory-count-badge">{suppliers.length} Enterprises</span>
-        </div>
 
-        <div className="directory-cards-grid">
-          {suppliers.map(renderCompanyCard)}
-        </div>
-      </section>
-
-      {/* SECTION 2: MATERIAL RECEIVERS */}
-      <section className="directory-section" style={{ marginTop: '36px' }}>
-        <div className="directory-section-header">
-          <div className="directory-section-title-wrap">
-            <div className="directory-section-icon receiver-icon">
-              <Truck size={16} />
-            </div>
-            <div>
-              <h2 className="directory-section-title">Material Receivers</h2>
-              <p className="directory-section-subtitle">
-                Recycling & reprocessing facilities procuring secondary materials for circular manufacturing.
-              </p>
-            </div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+              gap: '1rem',
+            }}
+          >
+            {suppliers.map((company) => (
+              <CompanyCard
+                key={company.id}
+                company={company}
+                onClick={onSelectCompany}
+              />
+            ))}
           </div>
-          <span className="directory-count-badge">{receivers.length} Enterprises</span>
-        </div>
+        </section>
 
-        <div className="directory-cards-grid">
-          {receivers.map(renderCompanyCard)}
-        </div>
-      </section>
+        {/* Section 2: Material Receivers */}
+        <section>
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>
+            <h2 style={{ fontSize: '1.125rem', fontWeight: 600 }}>Material Receivers</h2>
+            <span style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>
+              {receivers.length} Registered Facilities
+            </span>
+          </div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+              gap: '1rem',
+            }}
+          >
+            {receivers.map((company) => (
+              <CompanyCard
+                key={company.id}
+                company={company}
+                onClick={onSelectCompany}
+              />
+            ))}
+          </div>
+        </section>
+      </div>
     </div>
   );
-};
+}

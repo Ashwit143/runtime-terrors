@@ -6,13 +6,6 @@ import {
   QualityGrade,
   AvailabilityFrequency,
 } from '../../types/index.js';
-import {
-  PackagePlus,
-  Truck,
-  AlertTriangle,
-  ShieldCheck,
-  ArrowRight,
-} from 'lucide-react';
 
 interface ListingFormProps {
   initialData?: Partial<Listing>;
@@ -20,310 +13,318 @@ interface ListingFormProps {
   isLoading?: boolean;
 }
 
-export const ListingForm: React.FC<ListingFormProps> = ({
+export function ListingForm({
   initialData,
   onSubmit,
   isLoading = false,
-}) => {
-  const [type, setType] = useState<ListingType>(initialData?.type || 'SUPPLIER');
-  const [companyName, setCompanyName] = useState<string>(initialData?.companyName || '');
+}: ListingFormProps) {
+  const [formType, setFormType] = useState<ListingType>(initialData?.type || 'SUPPLIER');
+
+  // Form Fields State
+  const [companyName, setCompanyName] = useState(initialData?.companyName || '');
+  const [city, setCity] = useState(initialData?.city || '');
+  const [state, setState] = useState(initialData?.state || '');
+  const [contactPerson, setContactPerson] = useState(initialData?.contactPerson || '');
+  const [email, setEmail] = useState(initialData?.email || '');
+  const [phone, setPhone] = useState(initialData?.phone || '');
   const [category, setCategory] = useState<MaterialCategory>(initialData?.category || 'PLASTIC');
-  const [materialName, setMaterialName] = useState<string>(initialData?.materialName || '');
-  const [quantity, setQuantity] = useState<number>(initialData?.quantity || 25);
-  const [unit, setUnit] = useState<string>(initialData?.unit || 'tonnes/month');
+  const [materialName, setMaterialName] = useState(initialData?.materialName || '');
+  const [description, setDescription] = useState(initialData?.description || '');
+  const [quantity, setQuantity] = useState<number>(initialData?.quantity || 100);
+  const [unit, setUnit] = useState(initialData?.unit || 't/month');
   const [qualityGrade, setQualityGrade] = useState<QualityGrade>(initialData?.qualityGrade || 'HIGH');
-  const [city, setCity] = useState<string>(initialData?.city || 'Surat');
-  const [frequency, setFrequency] = useState<AvailabilityFrequency>(initialData?.frequency || 'WEEKLY');
+  const [frequency, setFrequency] = useState<AvailabilityFrequency>(
+    initialData?.frequency || 'MONTHLY',
+  );
   const [isHazardous, setIsHazardous] = useState<boolean>(initialData?.isHazardous || false);
-  const [isHazmatLicensed, setIsHazmatLicensed] = useState<boolean>(initialData?.isHazmatLicensed || false);
-  const [pricePerUnit, setPricePerUnit] = useState<string>(initialData?.pricePerUnit ? String(initialData.pricePerUnit) : '');
+  const [isHazmatLicensed, setIsHazmatLicensed] = useState<boolean>(
+    initialData?.isHazmatLicensed || false,
+  );
+  const [pricePerUnit, setPricePerUnit] = useState<number | undefined>(initialData?.pricePerUnit);
 
-  // Keep form synchronized when preset scenario loads
-  React.useEffect(() => {
-    if (initialData) {
-      if (initialData.type) setType(initialData.type);
-      if (initialData.companyName) setCompanyName(initialData.companyName);
-      if (initialData.category) setCategory(initialData.category);
-      if (initialData.materialName) setMaterialName(initialData.materialName);
-      if (initialData.quantity) setQuantity(initialData.quantity);
-      if (initialData.unit) setUnit(initialData.unit);
-      if (initialData.qualityGrade) setQualityGrade(initialData.qualityGrade);
-      if (initialData.city) setCity(initialData.city);
-      if (initialData.frequency) setFrequency(initialData.frequency);
-      if (initialData.isHazardous !== undefined) setIsHazardous(initialData.isHazardous);
-      if (initialData.isHazmatLicensed !== undefined) setIsHazmatLicensed(initialData.isHazmatLicensed);
-      if (initialData.pricePerUnit) setPricePerUnit(String(initialData.pricePerUnit));
-    }
-  }, [initialData]);
-
-  // Mode switcher handler with clean state management
-  const handleModeChange = (newType: ListingType) => {
-    setType(newType);
-    if (newType === 'SUPPLIER') {
-      setIsHazmatLicensed(false);
-    } else {
-      setIsHazardous(false);
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const payload: Partial<Listing> = {
-      type,
-      companyName: companyName || (type === 'SUPPLIER' ? 'Apex Producer Enterprises' : 'Apex Processing Facility'),
+      type: formType,
+      companyName,
+      city,
+      state: state || undefined,
+      contactPerson: contactPerson || undefined,
+      email: email || undefined,
+      phone: phone || undefined,
       category,
-      materialName: materialName || `${category} Grade Material`,
+      materialName: materialName || (category === 'PLASTIC' ? 'PET Bottle Flakes' : `${category} stream`),
+      description: description || undefined,
       quantity: Number(quantity),
       unit,
       qualityGrade,
-      city,
       frequency,
-      isHazardous: type === 'SUPPLIER' ? isHazardous : false,
-      isHazmatLicensed: type === 'RECEIVER' ? isHazmatLicensed : false,
+      isHazardous: formType === 'SUPPLIER' ? isHazardous : false,
+      isHazmatLicensed: formType === 'RECEIVER' ? isHazmatLicensed : false,
       pricePerUnit: pricePerUnit ? Number(pricePerUnit) : undefined,
     };
-    onSubmit(payload);
+
+    await onSubmit(payload);
   };
 
-  const isSupplier = type === 'SUPPLIER';
-
   return (
-    <div className="listing-form-wrapper">
-      {/* 1. Segmented Control Mode Toggle */}
-      <div className="form-mode-segmented-control">
+    <div className="form-container">
+      {/* 1. Clear Toggle between Supply and Demand */}
+      <div
+        role="group"
+        aria-label="Listing type"
+        className="form-toggle-group"
+      >
         <button
           type="button"
-          className={`form-mode-toggle-btn ${isSupplier ? 'active' : ''}`}
-          onClick={() => handleModeChange('SUPPLIER')}
+          aria-pressed={formType === 'SUPPLIER'}
+          onClick={() => setFormType('SUPPLIER')}
+          className={`form-toggle-btn ${formType === 'SUPPLIER' ? 'active' : ''}`}
         >
-          <PackagePlus size={15} />
-          <span>I Have Waste to Offer</span>
+          I Have Waste to Offer
         </button>
-
         <button
           type="button"
-          className={`form-mode-toggle-btn ${!isSupplier ? 'active' : ''}`}
-          onClick={() => handleModeChange('RECEIVER')}
+          aria-pressed={formType === 'RECEIVER'}
+          onClick={() => setFormType('RECEIVER')}
+          className={`form-toggle-btn ${formType === 'RECEIVER' ? 'active' : ''}`}
         >
-          <Truck size={15} />
-          <span>I Need Material</span>
+          I Need Material
         </button>
       </div>
 
-      {/* 2. Structured Form Container */}
-      <div className="listing-card-inner">
-        <div className="form-header-box">
-          <h3 className="form-header-title">
-            {isSupplier ? 'Register Industrial Waste Stream' : 'Register Raw Material Feedstock Demand'}
-          </h3>
-          <p className="form-header-sub">
-            {isSupplier
-              ? 'List your byproduct volume and quality specs to match with verified industrial receivers.'
-              : 'Specify required feedstock parameters to match with certified waste producers.'}
+      {/* 2. Single Form Card */}
+      <form className="form-card" onSubmit={handleSubmit}>
+        <div style={{ paddingBottom: '1rem', borderBottom: '1px solid var(--border)', marginBottom: '1.25rem' }}>
+          <h2 style={{ fontSize: '1.125rem', fontWeight: 600 }}>
+            {formType === 'SUPPLIER' ? 'Waste Stream Details' : 'Material Requirement Details'}
+          </h2>
+          <p style={{ fontSize: '0.8125rem', color: 'var(--muted-foreground)', marginTop: '0.25rem' }}>
+            {formType === 'SUPPLIER'
+              ? 'Register your industrial by-product to match with qualified manufacturing off-takers.'
+              : 'Specify your input raw material needs to discover consistent industrial suppliers.'}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="structured-listing-form">
-          {/* Row 1 (Full): Company Name */}
-          <div className="form-field-full">
-            <label className="form-field-label">
-              {isSupplier ? 'Supplier Enterprise Name' : 'Receiver Enterprise Name'}
+        <div className="form-grid-2">
+          {/* Company Name */}
+          <div className="form-field">
+            <label className="label-caps" style={{ marginBottom: '0.375rem' }}>
+              Enterprise / Facility Name *
             </label>
             <input
               type="text"
-              className="form-input"
-              placeholder={isSupplier ? 'e.g. Aravalli Polymers Ltd' : 'e.g. Gujarat Circular Fibres Ltd'}
-              value={companyName}
-              onChange={e => setCompanyName(e.target.value)}
               required
+              className="form-input"
+              placeholder="e.g. Deccan Polymers Pvt. Ltd."
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
             />
           </div>
 
-          {/* Row 2 (2-Col): Facility Location & Material Category */}
-          <div className="form-field-col">
-            <label className="form-field-label">Facility Location (Industrial Hub)</label>
-            <select
-              className="form-select"
+          {/* Location */}
+          <div className="form-field">
+            <label className="label-caps" style={{ marginBottom: '0.375rem' }}>
+              City / Location *
+            </label>
+            <input
+              type="text"
+              required
+              className="form-input"
+              placeholder="e.g. Surat, Gujarat"
               value={city}
-              onChange={e => setCity(e.target.value)}
-            >
-              <option value="Surat">Surat (Gujarat)</option>
-              <option value="Ahmedabad">Ahmedabad (Gujarat)</option>
-              <option value="Vadodara">Vadodara (Gujarat)</option>
-              <option value="Rajkot">Rajkot (Gujarat)</option>
-              <option value="Mumbai">Mumbai (Maharashtra)</option>
-              <option value="Pune">Pune (Maharashtra)</option>
-              <option value="Nagpur">Nagpur (Maharashtra)</option>
-              <option value="Delhi">Delhi NCR</option>
-              <option value="Jaipur">Jaipur (Rajasthan)</option>
-              <option value="Ludhiana">Ludhiana (Punjab)</option>
-              <option value="Coimbatore">Coimbatore (Tamil Nadu)</option>
-              <option value="Chennai">Chennai (Tamil Nadu)</option>
-              <option value="Hyderabad">Hyderabad (Telangana)</option>
-              <option value="Bengaluru">Bengaluru (Karnataka)</option>
-              <option value="Indore">Indore (Madhya Pradesh)</option>
-            </select>
+              onChange={(e) => setCity(e.target.value)}
+            />
           </div>
 
-          <div className="form-field-col">
-            <label className="form-field-label">
-              {isSupplier ? 'Waste / Byproduct Category' : 'Material Category'}
+          {/* Material Category */}
+          <div className="form-field">
+            <label className="label-caps" style={{ marginBottom: '0.375rem' }}>
+              Material Category *
             </label>
             <select
               className="form-select"
               value={category}
-              onChange={e => setCategory(e.target.value as MaterialCategory)}
+              onChange={(e) => setCategory(e.target.value as MaterialCategory)}
             >
-              <option value="PLASTIC">Plastic (PET, HDPE, LDPE, PP)</option>
-              <option value="TEXTILE">Textile (Cotton yarn, spinning drop, synthetics)</option>
-              <option value="METAL">Metal (Aluminium, steel offcuts, copper)</option>
-              <option value="FOOD_AGRO">Food & Agro (Paddy husk, straw, shells)</option>
-              <option value="CHEMICAL">Chemical (Spent solvents, acids, sludges)</option>
-              <option value="RUBBER_MINERALS">Rubber & Minerals (Tire crumb, foundry slag)</option>
+              <option value="PLASTIC">Polymers & Plastics</option>
+              <option value="TEXTILE">Textiles & Fiber</option>
+              <option value="METAL">Metals & Slag</option>
+              <option value="FOOD_AGRO">Biomass & Agro-Residue</option>
+              <option value="CHEMICAL">Chemicals & Solvents</option>
+              <option value="RUBBER_MINERALS">Rubber & Minerals</option>
             </select>
           </div>
 
-          {/* Row 3 (2-Col): Material Description & Quantity */}
-          <div className="form-field-col">
-            <label className="form-field-label">
-              {isSupplier ? 'Material Description / Stream Name' : 'Required Feedstock Description'}
+          {/* Material Name / Spec */}
+          <div className="form-field">
+            <label className="label-caps" style={{ marginBottom: '0.375rem' }}>
+              {formType === 'SUPPLIER' ? 'Stream / Material Name *' : 'Required Specification *'}
             </label>
             <input
               type="text"
-              className="form-input"
-              placeholder={isSupplier ? 'e.g. Hot-washed clear PET bottle flakes' : 'e.g. R-PET flakes for polyester yarn'}
-              value={materialName}
-              onChange={e => setMaterialName(e.target.value)}
               required
+              className="form-input"
+              placeholder="e.g. Clean PET Bottle Flakes / Slag 0-10mm"
+              value={materialName}
+              onChange={(e) => setMaterialName(e.target.value)}
             />
           </div>
 
-          <div className="form-field-col">
-            <label className="form-field-label">
-              {isSupplier ? 'Offered Quantity' : 'Required Quantity'}
+          {/* Quantity & Unit */}
+          <div className="form-field">
+            <label className="label-caps" style={{ marginBottom: '0.375rem' }}>
+              Quantity Volume *
             </label>
-            <div className="quantity-input-group">
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '0.5rem' }}>
               <input
                 type="number"
-                min="0.1"
-                step="0.1"
+                min="1"
+                required
                 className="form-input"
                 value={quantity}
-                onChange={e => setQuantity(Number(e.target.value))}
-                required
+                onChange={(e) => setQuantity(Number(e.target.value))}
               />
               <select
-                className="form-select qty-unit-select"
+                className="form-select"
                 value={unit}
-                onChange={e => setUnit(e.target.value)}
+                onChange={(e) => setUnit(e.target.value)}
               >
-                <option value="tonnes/month">tonnes/month</option>
-                <option value="tonnes/week">tonnes/week</option>
-                <option value="tonnes/year">tonnes/year</option>
-                <option value="tonnes (lot)">tonnes (lot)</option>
+                <option value="t/month">t/month</option>
+                <option value="kg/month">kg/month</option>
+                <option value="kL/month">kL/month</option>
+                <option value="m³/month">m³/month</option>
               </select>
             </div>
           </div>
 
-          {/* Row 4 (2-Col): Quality Grade & Availability */}
-          <div className="form-field-col">
-            <label className="form-field-label">
-              {isSupplier ? 'Offered Quality Grade' : 'Minimum Required Quality Grade'}
+          {/* Quality Grade */}
+          <div className="form-field">
+            <label className="label-caps" style={{ marginBottom: '0.375rem' }}>
+              Quality Grade *
             </label>
             <select
               className="form-select"
               value={qualityGrade}
-              onChange={e => setQualityGrade(e.target.value as QualityGrade)}
+              onChange={(e) => setQualityGrade(e.target.value as QualityGrade)}
             >
-              <option value="HIGH">High Grade (Clean, segregated stream)</option>
-              <option value="MEDIUM">Medium Grade (Standard post-industrial byproduct)</option>
-              <option value="LOW">Low Grade (Mixed composition, needs pre-treatment)</option>
+              <option value="HIGH">High Grade (Clean, sorted, uniform)</option>
+              <option value="MEDIUM">Medium Grade (Minor trace mix)</option>
+              <option value="LOW">Low Grade (Unsorted / high moisture)</option>
             </select>
           </div>
 
-          <div className="form-field-col">
-            <label className="form-field-label">
-              {isSupplier ? 'Availability Schedule' : 'Consumption Schedule'}
+          {/* Frequency */}
+          <div className="form-field">
+            <label className="label-caps" style={{ marginBottom: '0.375rem' }}>
+              Generation / Demand Frequency *
             </label>
             <select
               className="form-select"
               value={frequency}
-              onChange={e => setFrequency(e.target.value as AvailabilityFrequency)}
+              onChange={(e) => setFrequency(e.target.value as AvailabilityFrequency)}
             >
-              <option value="CONTINUOUS">Continuous (Ongoing output)</option>
-              <option value="WEEKLY">Weekly (Regular deliveries)</option>
-              <option value="MONTHLY">Monthly (Periodic batch)</option>
-              <option value="QUARTERLY">Quarterly (Seasonal campaign)</option>
-              <option value="ONE_TIME">One-Time (Spot surplus)</option>
+              <option value="CONTINUOUS">Continuous Daily</option>
+              <option value="WEEKLY">Weekly Batch</option>
+              <option value="MONTHLY">Monthly Regular</option>
+              <option value="QUARTERLY">Quarterly</option>
+              <option value="ONE_TIME">One-Time Lot</option>
             </select>
           </div>
 
-          {/* Row 5 (2-Col): Target Valuation & Compliance Checkbox */}
-          <div className="form-field-col">
-            <label className="form-field-label">
-              {isSupplier ? 'Target Valuation (₹ / Tonne - Optional)' : 'Budget Ceiling (₹ / Tonne - Optional)'}
+          {/* Contact Person */}
+          <div className="form-field">
+            <label className="label-caps" style={{ marginBottom: '0.375rem' }}>
+              Contact Person / Desk
             </label>
             <input
-              type="number"
+              type="text"
               className="form-input"
-              placeholder="e.g. 42000"
-              value={pricePerUnit}
-              onChange={e => setPricePerUnit(e.target.value)}
+              placeholder="e.g. Operations Manager"
+              value={contactPerson}
+              onChange={(e) => setContactPerson(e.target.value)}
             />
           </div>
 
-          <div className="form-field-col" style={{ display: 'flex', alignItems: 'flex-end' }}>
-            {isSupplier ? (
-              <label className={`form-checkbox-card ${isHazardous ? 'hazardous-selected' : ''}`}>
-                <input
-                  type="checkbox"
-                  checked={isHazardous}
-                  onChange={e => setIsHazardous(e.target.checked)}
-                />
-                <div>
-                  <div className="checkbox-title">
-                    <AlertTriangle size={13} color={isHazardous ? '#9F1239' : 'var(--text-tertiary)'} />
-                    <span>Hazardous Material</span>
-                  </div>
-                  <div className="checkbox-desc">Requires Hazmat license (Gate 1)</div>
-                </div>
-              </label>
-            ) : (
-              <label className={`form-checkbox-card ${isHazmatLicensed ? 'hazmat-licensed' : ''}`}>
-                <input
-                  type="checkbox"
-                  checked={isHazmatLicensed}
-                  onChange={e => setIsHazmatLicensed(e.target.checked)}
-                />
-                <div>
-                  <div className="checkbox-title">
-                    <ShieldCheck size={13} color={isHazmatLicensed ? 'var(--brand-gold-dark)' : 'var(--text-tertiary)'} />
-                    <span>SPCB Hazmat Licensed</span>
-                  </div>
-                  <div className="checkbox-desc">Authorized for hazardous waste</div>
-                </div>
-              </label>
-            )}
+          {/* Detailed Description */}
+          <div className="form-field form-field-full">
+            <label className="label-caps" style={{ marginBottom: '0.375rem' }}>
+              Material Description & Technical Notes
+            </label>
+            <textarea
+              className="form-textarea"
+              placeholder="Particle size, moisture content, packing type (jumbo bags/bulk tanker), contamination notes..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
           </div>
+        </div>
 
-          {/* Row 6: Submit Action */}
-          <div className="form-submit-row">
-            <button
-              type="submit"
-              className="btn-primary form-cta-btn"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                'Processing 5-Factor Pipeline...'
-              ) : (
-                <>
-                  {isSupplier ? 'Find Qualified Receivers' : 'Find Qualified Suppliers'} <ArrowRight size={15} />
-                </>
-              )}
-            </button>
-          </div>
-        </form>
-      </div>
+        {/* Hazmat & Compliance Checkbox Gate */}
+        <div className="form-hazmat-box">
+          {formType === 'SUPPLIER' ? (
+            <div>
+              <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  style={{ marginTop: '0.25rem', accentColor: 'var(--primary)' }}
+                  checked={isHazardous}
+                  onChange={(e) => setIsHazardous(e.target.checked)}
+                />
+                <span style={{ fontSize: '0.875rem' }}>
+                  <strong>This stream contains classified hazardous waste (CPCB/State PCB).</strong>
+                  <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--muted-foreground)', marginTop: '0.125rem' }}>
+                    Hazardous streams are automatically gated to receivers possessing valid hazmat handling authorizations.
+                  </span>
+                </span>
+              </label>
+            </div>
+          ) : (
+            <div>
+              <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  style={{ marginTop: '0.25rem', accentColor: 'var(--primary)' }}
+                  checked={isHazmatLicensed}
+                  onChange={(e) => setIsHazmatLicensed(e.target.checked)}
+                />
+                <span style={{ fontSize: '0.875rem' }}>
+                  <strong>Facility holds valid hazardous waste handling authorization.</strong>
+                  <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--muted-foreground)', marginTop: '0.125rem' }}>
+                    Authorizes this facility to receive and co-process regulated hazardous by-product streams.
+                  </span>
+                </span>
+              </label>
+            </div>
+          )}
+        </div>
+
+        {/* Action Buttons */}
+        <div style={{ marginTop: '1.5rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '0.75rem' }}>
+          <button
+            type="submit"
+            disabled={isLoading}
+            style={{
+              backgroundColor: 'var(--primary)',
+              color: 'var(--primary-foreground)',
+              border: 'none',
+              borderRadius: 'var(--radius-md)',
+              padding: '0.625rem 1.25rem',
+              fontSize: '0.875rem',
+              fontWeight: 600,
+              cursor: isLoading ? 'not-allowed' : 'pointer',
+              opacity: isLoading ? 0.7 : 1,
+              transition: 'background-color 0.15s ease',
+            }}
+          >
+            {isLoading
+              ? 'Evaluating Pairs...'
+              : formType === 'SUPPLIER'
+              ? 'Publish Waste Listing & Find Matches'
+              : 'Publish Material Demand & Find Suppliers'}
+          </button>
+        </div>
+      </form>
     </div>
   );
-};
+}
