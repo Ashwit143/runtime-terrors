@@ -9,20 +9,33 @@ dotenv.config();
 
 const app = express();
 
-// Middlewares
-app.use(cors());
+// Enable CORS for all origins and headers (production & development safe)
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  })
+);
+
 app.use(express.json());
 
-// API Routes
+// API Routes with /api prefix
 app.use('/api/listings', listingsRouter);
 app.use('/api/matches', matchesRouter);
 app.use('/api/impact', impactRouter);
 
+// Also mount routes at root in case reverse-proxy/serverless routes strip /api
+app.use('/listings', listingsRouter);
+app.use('/matches', matchesRouter);
+app.use('/impact', impactRouter);
+
 // Health Check
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/health'], (req, res) => {
   res.json({
     status: 'healthy',
-    system: 'CircularMatch AI Matching Engine',
+    system: 'Waste 2 Worth Matching Engine',
     version: '1.0.0',
     timestamp: new Date().toISOString(),
   });
