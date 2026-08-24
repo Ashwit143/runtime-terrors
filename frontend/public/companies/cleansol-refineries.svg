@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgVacuum" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="ss316" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#64748b"/>
+      <stop offset="50%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#475569"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="300" fill="url(#bgVacuum)"/>
+
+  <!-- High-Vacuum Distillation Kettle & Condenser Column -->
+  <rect x="80" y="80" width="130" height="140" rx="8" fill="url(#ss316)"/>
+  <ellipse cx="145" cy="80" rx="65" ry="18" fill="#94a3b8"/>
+  <rect x="135" y="40" width="20" height="40" fill="#334155"/>
+
+  <!-- Vacuum Condenser & Heat Exchanger -->
+  <rect x="250" y="40" width="90" height="160" rx="6" fill="url(#ss316)"/>
+  <!-- Cooling Coil Tubes inside -->
+  <line x1="260" y1="70" x2="330" y2="70" stroke="#0ea5e9" stroke-width="3"/>
+  <line x1="260" y1="100" x2="330" y2="100" stroke="#0ea5e9" stroke-width="3"/>
+  <line x1="260" y1="130" x2="330" y2="130" stroke="#0ea5e9" stroke-width="3"/>
+  <line x1="260" y1="160" x2="330" y2="160" stroke="#0ea5e9" stroke-width="3"/>
+
+  <!-- Process Vapor Line -->
+  <path d="M 145 40 L 145 25 L 295 25 L 295 40" fill="none" stroke="#f59e0b" stroke-width="8"/>
+
+  <!-- Hazmat Receiver Storage Tank with Level Sight Gauge -->
+  <rect x="380" y="80" width="120" height="140" rx="6" fill="#1e293b" stroke="#ec4899" stroke-width="2"/>
+  <rect x="480" y="95" width="8" height="110" fill="#ec4899" opacity="0.8"/>
+
+  <!-- SPCB Hazmat Regulatory Seal -->
+  <polygon points="540,50 560,30 580,50 560,70" fill="#dc2626"/>
+  <text x="553" y="55" fill="#ffffff" font-family="system-ui, sans-serif" font-size="10" font-weight="900">!</text>
+
+  <!-- Title Badge -->
+  <rect x="20" y="250" width="290" height="34" rx="4" fill="#080e1a" opacity="0.95" stroke="#ec4899" stroke-width="1"/>
+  <circle cx="36" cy="267" r="5" fill="#ec4899"/>
+  <text x="50" y="271" fill="#fdf2f8" font-family="system-ui, sans-serif" font-size="12" font-weight="700">Vacuum Solvent Distillation &amp; Hazmat</text>
+</svg>

@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgTextile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#18181b"/>
+      <stop offset="100%" stop-color="#27272a"/>
+    </linearGradient>
+    <linearGradient id="cottonThread" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="300" fill="url(#bgTextile)"/>
+
+  <!-- High-Speed Ring Spinning Frame Perspective -->
+  <line x1="50" y1="40" x2="550" y2="40" stroke="#71717a" stroke-width="8"/>
+  <line x1="50" y1="70" x2="550" y2="70" stroke="#a1a1aa" stroke-width="4"/>
+
+  <!-- Rows of Yarn Spindles / Bobbins -->
+  <g fill="url(#cottonThread)">
+    <!-- Spindle Row 1 -->
+    <rect x="70" y="80" width="22" height="110" rx="4"/>
+    <polygon points="70,80 92,80 85,60 77,60" fill="#cbd5e1"/>
+    <rect x="79" y="190" width="4" height="40" fill="#71717a"/>
+
+    <rect x="120" y="80" width="22" height="110" rx="4"/>
+    <polygon points="120,80 142,80 135,60 127,60" fill="#cbd5e1"/>
+    <rect x="129" y="190" width="4" height="40" fill="#71717a"/>
+
+    <rect x="170" y="80" width="22" height="110" rx="4"/>
+    <polygon points="170,80 192,80 185,60 177,60" fill="#cbd5e1"/>
+    <rect x="179" y="190" width="4" height="40" fill="#71717a"/>
+
+    <rect x="220" y="80" width="22" height="110" rx="4"/>
+    <polygon points="220,80 242,80 235,60 227,60" fill="#cbd5e1"/>
+    <rect x="229" y="190" width="4" height="40" fill="#71717a"/>
+
+    <rect x="270" y="80" width="22" height="110" rx="4"/>
+    <polygon points="270,80 292,80 285,60 277,60" fill="#cbd5e1"/>
+    <rect x="279" y="190" width="4" height="40" fill="#71717a"/>
+
+    <rect x="320" y="80" width="22" height="110" rx="4"/>
+    <polygon points="320,80 342,80 335,60 327,60" fill="#cbd5e1"/>
+    <rect x="329" y="190" width="4" height="40" fill="#71717a"/>
+
+    <rect x="370" y="80" width="22" height="110" rx="4"/>
+    <polygon points="370,80 392,80 385,60 377,60" fill="#cbd5e1"/>
+    <rect x="379" y="190" width="4" height="40" fill="#71717a"/>
+
+    <rect x="420" y="80" width="22" height="110" rx="4"/>
+    <polygon points="420,80 442,80 435,60 427,60" fill="#cbd5e1"/>
+    <rect x="429" y="190" width="4" height="40" fill="#71717a"/>
+
+    <rect x="470" y="80" width="22" height="110" rx="4"/>
+    <polygon points="470,80 492,80 485,60 477,60" fill="#cbd5e1"/>
+    <rect x="479" y="190" width="4" height="40" fill="#71717a"/>
+
+    <rect x="520" y="80" width="22" height="110" rx="4"/>
+    <polygon points="520,80 542,80 535,60 527,60" fill="#cbd5e1"/>
+    <rect x="529" y="190" width="4" height="40" fill="#71717a"/>
+  </g>
+
+  <!-- Drawn Cotton Threads Streaming down -->
+  <g stroke="#ffffff" stroke-width="1.2" opacity="0.75">
+    <line x1="81" y1="40" x2="81" y2="80"/>
+    <line x1="131" y1="40" x2="131" y2="80"/>
+    <line x1="181" y1="40" x2="181" y2="80"/>
+    <line x1="231" y1="40" x2="231" y2="80"/>
+    <line x1="281" y1="40" x2="281" y2="80"/>
+    <line x1="331" y1="40" x2="331" y2="80"/>
+    <line x1="381" y1="40" x2="381" y2="80"/>
+    <line x1="431" y1="40" x2="431" y2="80"/>
+    <line x1="481" y1="40" x2="481" y2="80"/>
+    <line x1="531" y1="40" x2="531" y2="80"/>
+  </g>
+
+  <!-- Machine Guide Rails & Base -->
+  <rect x="40" y="230" width="520" height="24" rx="3" fill="#3f3f46"/>
+  <rect x="60" y="254" width="480" height="18" fill="#27272a"/>
+
+  <!-- Title Badge -->
+  <rect x="20" y="250" width="260" height="34" rx="4" fill="#09090b" opacity="0.9" stroke="#52525b" stroke-width="1"/>
+  <circle cx="36" cy="267" r="5" fill="#e4e4e7"/>
+  <text x="50" y="271" fill="#fafafa" font-family="system-ui, sans-serif" font-size="12" font-weight="700">Cotton Yarn Spinning Machinery</text>
+</svg>

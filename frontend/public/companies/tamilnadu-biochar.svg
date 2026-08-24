@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgKiln" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#022c22"/>
+      <stop offset="100%" stop-color="#064e3b"/>
+    </linearGradient>
+    <linearGradient id="pyrolysisRetort" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1f2937"/>
+      <stop offset="50%" stop-color="#4b5563"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="biocharCoal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#27272a"/>
+      <stop offset="100%" stop-color="#09090b"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="300" fill="url(#bgKiln)"/>
+
+  <!-- Heavy Duty Rotary Pyrolysis Retort / Drum Kiln -->
+  <polygon points="100,100 420,70 420,170 100,200" fill="url(#pyrolysisRetort)" stroke="#10b981" stroke-width="2"/>
+  <!-- Kiln Riding Rings & Trunnion Rollers -->
+  <ellipse cx="160" cy="145" rx="16" ry="46" fill="#374151" stroke="#6ee7b7" stroke-width="2"/>
+  <ellipse cx="360" cy="125" rx="16" ry="46" fill="#374151" stroke="#6ee7b7" stroke-width="2"/>
+  
+  <!-- Under-Kiln Syngas Combustion Flues -->
+  <rect x="120" y="200" width="280" height="15" fill="#f97316"/>
+  <line x1="120" y1="200" x2="400" y2="200" stroke="#fef08a" stroke-width="3"/>
+
+  <!-- Syngas Extraction Hood & Condensation Flue -->
+  <path d="M 260 85 L 260 30 L 480 30 L 480 90" fill="none" stroke="#6ee7b7" stroke-width="8"/>
+
+  <!-- High-Purity Biochar Carbon Output Chute & Storage Heap -->
+  <polygon points="420,120 540,140 520,240 400,220" fill="url(#biocharCoal)" stroke="#3f3f46" stroke-width="2"/>
+  <circle cx="480" cy="180" r="3" fill="#52525b"/>
+  <circle cx="460" cy="200" r="4" fill="#52525b"/>
+  <circle cx="500" cy="210" r="3.5" fill="#52525b"/>
+
+  <!-- Title Badge -->
+  <rect x="20" y="250" width="290" height="34" rx="4" fill="#021c15" opacity="0.95" stroke="#059669" stroke-width="1"/>
+  <circle cx="36" cy="267" r="5" fill="#10b981"/>
+  <text x="50" y="271" fill="#ecfdf5" font-family="system-ui, sans-serif" font-size="12" font-weight="700">Rotary Pyrolysis &amp; Biochar Kiln Plant</text>
+</svg>

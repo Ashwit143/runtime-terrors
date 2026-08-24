@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgAgro" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#14281d"/>
+      <stop offset="100%" stop-color="#0a140f"/>
+    </linearGradient>
+    <linearGradient id="siloGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#94a3b8"/>
+      <stop offset="50%" stop-color="#f1f5f9"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+    <linearGradient id="huskGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="300" fill="url(#bgAgro)"/>
+
+  <!-- Large Agricultural Grain Silos -->
+  <g fill="url(#siloGrad)">
+    <!-- Silo 1 -->
+    <path d="M 60 70 L 105 30 L 150 70 Z" fill="#64748b"/>
+    <rect x="60" y="70" width="90" height="150" rx="3"/>
+    <line x1="60" y1="110" x2="150" y2="110" stroke="#475569" stroke-width="2"/>
+    <line x1="60" y1="150" x2="150" y2="150" stroke="#475569" stroke-width="2"/>
+    <line x1="60" y1="190" x2="150" y2="190" stroke="#475569" stroke-width="2"/>
+
+    <!-- Silo 2 -->
+    <path d="M 170 60 L 220 20 L 270 60 Z" fill="#64748b"/>
+    <rect x="170" y="60" width="100" height="160" rx="3"/>
+    <line x1="170" y1="100" x2="270" y2="100" stroke="#475569" stroke-width="2"/>
+    <line x1="170" y1="140" x2="270" y2="140" stroke="#475569" stroke-width="2"/>
+    <line x1="170" y1="180" x2="270" y2="180" stroke="#475569" stroke-width="2"/>
+
+    <!-- Silo 3 -->
+    <path d="M 290 70 L 335 30 L 380 70 Z" fill="#64748b"/>
+    <rect x="290" y="70" width="90" height="150" rx="3"/>
+    <line x1="290" y1="110" x2="380" y2="110" stroke="#475569" stroke-width="2"/>
+    <line x1="290" y1="150" x2="380" y2="150" stroke="#475569" stroke-width="2"/>
+    <line x1="290" y1="190" x2="380" y2="190" stroke="#475569" stroke-width="2"/>
+  </g>
+
+  <!-- Grain Elevator Conveyor Bridge -->
+  <line x1="50" y1="45" x2="400" y2="45" stroke="#f59e0b" stroke-width="8"/>
+  <line x1="50" y1="52" x2="400" y2="52" stroke="#d97706" stroke-width="3"/>
+  <polygon points="380,45 540,160 520,160 360,45" fill="#ca8a04" opacity="0.6"/>
+
+  <!-- Paddy Rice Husk Storage Mound & Discharge Chute -->
+  <path d="M 370 240 Q 460 140 560 240 Z" fill="url(#huskGrad)"/>
+  <circle cx="470" cy="180" r="2" fill="#fef3c7"/>
+  <circle cx="490" cy="200" r="2.5" fill="#fef3c7"/>
+  <circle cx="440" cy="210" r="2" fill="#fef3c7"/>
+  <circle cx="520" cy="220" r="3" fill="#fde68a"/>
+
+  <!-- Discharge Chute -->
+  <rect x="420" y="110" width="30" height="60" fill="#475569" transform="rotate(15, 420, 110)"/>
+
+  <!-- Title Badge -->
+  <rect x="20" y="250" width="280" height="34" rx="4" fill="#08140c" opacity="0.95" stroke="#15803d" stroke-width="1"/>
+  <circle cx="36" cy="267" r="5" fill="#65a30d"/>
+  <text x="50" y="271" fill="#f0fdf4" font-family="system-ui, sans-serif" font-size="12" font-weight="700">Grain Silos &amp; Paddy Rice Husk Plant</text>
+</svg>
