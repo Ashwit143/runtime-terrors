@@ -68,13 +68,18 @@ export function Sidebar({
       <aside className={`sidebar ${isOpenMobile ? 'open' : ''}`}>
         {/* Sidebar Brand Header */}
         <div className="sidebar-header">
-          <div className="sidebar-brand">
-            <span className="brand-badge">
-              W<span style={{ color: 'var(--primary)' }}>2</span>
-            </span>
-            <span>
-              Waste<span style={{ color: 'var(--primary)' }}> 2 </span>Worth
-            </span>
+          <div className="sidebar-brand" style={{ width: '100%' }}>
+            <img
+              src="/logo-white.png"
+              alt="Waste 2 Worth Logo"
+              style={{
+                height: '38px',
+                width: 'auto',
+                maxWidth: '100%',
+                objectFit: 'contain',
+                display: 'block',
+              }}
+            />
           </div>
 
           {isOpenMobile && (

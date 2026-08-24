@@ -29,9 +29,19 @@ export function Footer({ onNavigateTab }: FooterProps) {
     <footer className="global-footer">
       <div className="footer-inner">
         <div>
-          <p style={{ fontFamily: 'var(--font-display)', fontSize: '0.9375rem', fontWeight: 700, letterSpacing: '-0.01em' }}>
-            Waste<span style={{ color: 'var(--primary)' }}> 2 </span>Worth
-          </p>
+          <div style={{ marginBottom: '0.875rem' }}>
+            <img
+              src="/logo-white.png"
+              alt="Waste 2 Worth Logo"
+              style={{
+                height: '38px',
+                width: 'auto',
+                maxWidth: '100%',
+                objectFit: 'contain',
+                display: 'inline-block',
+              }}
+            />
+          </div>
           <p style={{ marginTop: '0.5rem', maxWidth: '20rem', fontSize: '0.75rem', lineHeight: 1.5, color: 'rgba(247, 248, 245, 0.65)' }}>
             An industrial waste-exchange matching platform connecting enterprises to exchange, reuse, and create value from industrial by-products.
           </p>

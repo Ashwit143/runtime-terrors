@@ -46,14 +46,19 @@ export function Header({
           type="button"
           onClick={() => onNavigateTab('OVERVIEW')}
           className="top-header-brand"
-          style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', padding: 0 }}
         >
-          <span className="brand-badge">
-            W<span style={{ color: 'var(--primary)' }}>2</span>
-          </span>
-          <span>
-            Waste<span style={{ color: 'var(--primary)' }}> 2 </span>Worth
-          </span>
+          <img
+            src="/logo.png"
+            alt="Waste 2 Worth Logo"
+            style={{
+              height: '40px',
+              width: 'auto',
+              maxHeight: '40px',
+              objectFit: 'contain',
+              display: 'block',
+            }}
+          />
         </button>
       </div>
 

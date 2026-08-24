@@ -58,9 +58,19 @@ export function AuthDemo({ mode, onBack, onEnterWorkspace }: AuthDemoProps) {
         </button>
 
         <div style={{ maxWidth: '24rem', margin: '2rem 0' }}>
-          <span className="brand-badge" style={{ marginBottom: '1.25rem', width: '2rem', height: '2rem' }}>
-            W<span style={{ color: 'var(--primary)' }}>2</span>
-          </span>
+          <div style={{ marginBottom: '1.5rem' }}>
+            <img
+              src="/logo-white.png"
+              alt="Waste 2 Worth Logo"
+              style={{
+                height: '44px',
+                width: 'auto',
+                maxWidth: '100%',
+                objectFit: 'contain',
+                display: 'inline-block',
+              }}
+            />
+          </div>
           <h2
             style={{
               fontFamily: 'var(--font-display)',
